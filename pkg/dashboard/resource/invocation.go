@@ -94,6 +94,23 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 
 	skipTLSVerification := strings.ToLower(request.Header.Get(headers.SkipTLSVerification)) == "true"
 
+	// TODO profaastinate
+	// see if the x-nuclio-async is set to true: to the profaastinate stuff
+	// - immediately return a 204 status code
+	// - first step, put the complete function call (headers etc) into a db
+	asyncHeader := request.Header.Get(headers.FunctionCallAsync)
+	if strings.TrimSpace(strings.ToLower(asyncHeader)) == "true" {
+		// Immediately return
+		tr.Logger.Info("Profaastinate has detected async header --> don't call function now")
+		responseWriter.WriteHeader(204)
+
+		go func() {
+			// TODO put request into SQL DB
+		}()
+
+		return
+	}
+
 	// resolve the function host
 	invocationResult, err := tr.getPlatform().CreateFunctionInvocation(ctx, &platform.CreateFunctionInvocationOptions{
 		Name:                functionName,
@@ -128,6 +145,8 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		// don't send nuclio headers to the actual function
 		if !headers.IsNuclioHeader(headerName) {
 			responseWriter.Header().Set(headerName, headerValue[0])
+		} else {
+			tr.Logger.Info("dashboard is deleting returned header", "headerName", headerName, "headerValue", headerValue)
 		}
 	}
 

@@ -65,6 +65,9 @@ const (
 	FilterContains = "X-Nuclio-Filter-Contains"
 	StreamNoAck    = "X-Nuclio-Stream-No-Ack"
 	Arguments      = "X-Nuclio-Arguments"
+
+	// Profaastinate additional headers
+	FunctionCallAsync = "X-Nuclio-Async"
 )
 
 func IsNuclioHeader(headerName string) bool {
