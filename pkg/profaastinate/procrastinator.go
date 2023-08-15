@@ -54,8 +54,18 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	pro.logger.Debug("Procrastinating request for function %s\n", request.Header.Get("x-nuclio-function-name"))
 
 	// read request data
-	name := request.Header.Get("x-nuclio-function-name") // TODO does Nuclio check earlier if the header exists?
-	timestamp := time.Now()
+	name := request.Header.Get("x-nuclio-function-name") // TODO does Nuclio already check if the header exists?
+
+	var timestamp time.Time
+	locStr := "Europe/Berlin"
+	location, locErr := time.LoadLocation(locStr)
+	if locErr == nil {
+		timestamp = time.Now().In(location)
+	} else {
+		pro.Logger.Debug("could not resolve location " + locStr)
+		timestamp = time.Now()
+	}
+
 	httpVerb := request.Method
 	headers, headersErr := json.Marshal(request.Header) // string() required
 	body, bodyErr := io.ReadAll(request.Body)           // string() required
