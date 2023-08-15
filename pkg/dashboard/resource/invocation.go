@@ -18,6 +18,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/nuclio/nuclio/pkg/profaastinate"
 	"io"
 	"net/http"
 	"strings"
@@ -36,6 +37,7 @@ import (
 
 type invocationResource struct {
 	*resource
+	procastinator *profaastinate.Procrastinator
 }
 
 func (tr *invocationResource) ExtendMiddlewares() error {
@@ -57,6 +59,10 @@ func (tr *invocationResource) OnAfterInitialize() error {
 	} {
 		registrar("/*", tr.handleRequest)
 	}
+
+	pLogger := tr.Logger.GetChild("procrastinator")
+	pLogger.Info("Hello World I just woke um from nothing")
+	tr.procastinator.Logger = pLogger
 
 	return nil
 }
@@ -103,11 +109,7 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		// Immediately return
 		tr.Logger.Info("Profaastinate has detected async header --> don't call function now")
 		responseWriter.WriteHeader(204)
-
-		go func() {
-			// TODO put request into SQL DB
-		}()
-
+		tr.procastinator.Procrastinate(request)
 		return
 	}
 
@@ -179,7 +181,8 @@ func (tr *invocationResource) resolveInvokeTimeout(invokeTimeout string) (time.D
 
 // register the resource
 var invocationResourceInstance = &invocationResource{
-	resource: newResource("api/function_invocations", []restful.ResourceMethod{}),
+	resource:      newResource("api/function_invocations", []restful.ResourceMethod{}),
+	procastinator: profaastinate.NewProcrastinator(nil),
 }
 
 func init() {

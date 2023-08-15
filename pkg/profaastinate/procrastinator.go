@@ -15,27 +15,41 @@ import (
 
 const (
 	insertDelayedCall = "INSERT INTO delayed_calls (function_name, call_time, HTTP_verb, headers, body) VALUES ($1, $2, $3, $4, $5);"
-	connString        = "postgres://postgres:1234@localhost:5432/postgres"
+	connString        = "postgres://postgres:1234@postgres:5432/postgres" // TODO check if the change localhost -> postgres works
 )
 
 type Procrastinator struct {
 	conn   *pgx.Conn
-	logger logger.Logger
+	Logger logger.Logger
 }
 
 func ensureTablesExist(conn *pgx.Conn) error {
-	_, err := conn.Exec(context.Background(), "CREATE TABLE IF NOT EXISTS function_metadata(function_name VARCHAR ( 50 ) NOT NULL PRIMARY KEY, max_latency INT NOT NULL);")
+	_, err := conn.Exec(context.Background(), `
+			CREATE TABLE IF NOT EXISTS delayed_calls(
+		    	id SERIAL PRIMARY KEY,
+				function_name VARCHAR ( 50 ) NOT NULL,
+				call_time TIMESTAMP NOT NULL,
+				HTTP_verb TEXT NOT NULL,
+				headers TEXT NOT NULL,
+				body TEXT NOT NULL
+			);
+		`)
 	if err != nil {
 		return err
 	}
-	_, err = conn.Exec(context.Background(), "CREATE TABLE IF NOT EXISTS delayed_calls(id SERIAL PRIMARY KEY, function_name VARCHAR ( 50 ) NOT NULL, call_time TIMESTAMP NOT NULL, request TEXT NOT NULL);")
+	_, err = conn.Exec(context.Background(), `
+			CREATE TABLE IF NOT EXISTS function_metadata(
+			    function_name VARCHAR ( 50 ) NOT NULL PRIMARY KEY,
+    			max_latency INT NOT NULL
+			);
+		`)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func NewProcrastinator(logger logger.Logger) Procrastinator {
+func NewProcrastinator(logger logger.Logger) *Procrastinator {
 	// create DB connection
 	//conn, err := pgx.Connect(context.Background(), "postgres:1234@postgres:5432") -- old version TODO check which connString works
 	conn, err := pgx.Connect(context.Background(), connString)
@@ -44,14 +58,14 @@ func NewProcrastinator(logger logger.Logger) Procrastinator {
 		os.Exit(1)
 	}
 	err = ensureTablesExist(conn)
-	return Procrastinator{
+	return &Procrastinator{
 		conn, logger,
 	}
 }
 
 func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 
-	pro.logger.Debug("Procrastinating request for function %s\n", request.Header.Get("x-nuclio-function-name"))
+	pro.Logger.Debug("Procrastinating request for function %s\n", request.Header.Get("x-nuclio-function-name"))
 
 	// read request data
 	name := request.Header.Get("x-nuclio-function-name") // TODO does Nuclio already check if the header exists?
@@ -70,19 +84,18 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	headers, headersErr := json.Marshal(request.Header) // string() required
 	body, bodyErr := io.ReadAll(request.Body)           // string() required
 
-	// check if all required values exist TODO what happens if not?
+	// check if all required values exist
 	if name == "" || headersErr != nil || bodyErr != nil {
 		errMsg := "Error occurred while reading request fields"
-		pro.logger.Error(errMsg)
+		pro.Logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
 
 	// insert values into DB
-	// TODO which context to use?
 	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp, httpVerb, string(headers), string(body))
-	pro.logger.Info(res.String())
+	pro.Logger.Info("Response from database: %s", res.String())
 	if err != nil {
-		pro.logger.Error("Error occurred while inserting request values into database")
+		pro.Logger.Error("Error occurred while inserting request values into database")
 	}
 
 	return err
