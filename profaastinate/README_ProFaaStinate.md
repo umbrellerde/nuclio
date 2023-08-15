@@ -2,9 +2,12 @@
 
 **Step 0:** Make sure you're on branch `1.11.x`.
 
+Create a docker network for all containers to live in: `docker network create profaastinate`
+
 **Step 1:** Build your local Nuclio version.
 
 ```shell
+cd ..
 make build
 ```
 
@@ -22,6 +25,7 @@ COMMAND="docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name nuclio-dashboard \
     -e NUCLIO_DASHBOARD_NO_PULL_BASE_IMAGES='true' \
+    --network profaastinate \
     quay.io/nuclio/dashboard:latest-$ARCH"
 
 eval "$COMMAND"
