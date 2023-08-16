@@ -17,6 +17,7 @@ limitations under the License.
 package resource
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/nuclio/nuclio/pkg/profaastinate"
 	"io"
@@ -91,6 +92,9 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		tr.writeErrorMessage(responseWriter, "Failed to read request body")
 		return
 	}
+
+	// restore body for further processing
+	request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 
 	invokeTimeout, err := tr.resolveInvokeTimeout(request.Header.Get(headers.InvokeTimeout))
 	if err != nil {
