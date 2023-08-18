@@ -60,7 +60,15 @@ func (i *invoker) invoke(ctx context.Context,
 	// for API backwards compatibility - enrich url in case it's not given
 	if createFunctionInvocationOptions.URL == "" &&
 		len(createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()) > 0 {
-		invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[0]
+		//invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[0]
+		invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[1]
+
+		i.logger.Debug("INVOKER.GO: invocation urls:")
+		i.logger.Debug("Function container %s", createFunctionInvocationOptions.FunctionInstance.GetStatus().ContainerImage)
+		for url, idx := range createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs() {
+			i.logger.Debug("%d: %s", idx, url)
+		}
+
 		i.logger.DebugWithCtx(ctx,
 			"Using default invocation URL",
 			"url", invocationURL)
