@@ -39,6 +39,7 @@ import (
 type invocationResource struct {
 	*resource
 	procastinator *profaastinate.Procrastinator
+	taskrunner    *profaastinate.Taskrunner
 }
 
 func (tr *invocationResource) ExtendMiddlewares() error {
@@ -61,12 +62,21 @@ func (tr *invocationResource) OnAfterInitialize() error {
 		registrar("/*", tr.handleRequest)
 	}
 
+	// create the procrastinator
 	pLogger := tr.Logger.GetChild("procrastinator")
 	pLogger.Info("Hello World I just woke um from nothing")
 	tr.procastinator.Logger = pLogger
 
+	// create the taskrunner
+	tLogger := tr.Logger.GetChild("taskrunner")
+	tLogger.Info("Hello there, I write about people running tasks!")
+	tr.taskrunner.Logger = tLogger
+
 	return nil
 }
+
+// TODO change
+var taskrunnerRunning bool = false
 
 func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
@@ -108,15 +118,28 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 	// see if the x-nuclio-async is set to true: to the profaastinate stuff
 	// - immediately return a 204 status code
 	// - first step, put the complete function call (headers etc) into a db
+	// TODO consider case in which the header has multiple values => the if statement would probably cause an error
+
+	tr.Logger.Info(profaastinate.NuclioURL())
+
 	asyncHeader := request.Header.Get(headers.FunctionCallAsync)
 	if strings.TrimSpace(strings.ToLower(asyncHeader)) == "true" {
 		// Immediately return
 		tr.Logger.Info("Profaastinate has detected async header --> don't call function now")
 		responseWriter.WriteHeader(204)
 		tr.procastinator.Procrastinate(request)
+
+		// TODO start taskrunner
+		if !taskrunnerRunning {
+			go tr.taskrunner.Start(time.Second * 10)
+			taskrunnerRunning = true
+		}
+
 		return
 	}
-
+	if request.Header.Get("executed-by-taskrunner") == "true" {
+		tr.Logger.Info("TASKRUNNER HAT FUNKTION AUSGEFÜHRT")
+	}
 	// resolve the function host
 	invocationResult, err := tr.getPlatform().CreateFunctionInvocation(ctx, &platform.CreateFunctionInvocationOptions{
 		Name:                functionName,
@@ -186,7 +209,8 @@ func (tr *invocationResource) resolveInvokeTimeout(invokeTimeout string) (time.D
 // register the resource
 var invocationResourceInstance = &invocationResource{
 	resource:      newResource("api/function_invocations", []restful.ResourceMethod{}),
-	procastinator: profaastinate.NewProcrastinator(nil),
+	procastinator: profaastinate.NewProcrastinator(),
+	taskrunner:    profaastinate.NewTaskrunner(),
 }
 
 func init() {

@@ -2,7 +2,10 @@
 
 **Step 0:** Make sure you're on branch `1.11.x`.
 
-Create a docker network for all containers to live in: `docker network create profaastinate`
+Create a docker network for all containers to live in: 
+```shell
+docker network create profaastinate
+```
 
 **Step 1:** Build your local Nuclio version.
 

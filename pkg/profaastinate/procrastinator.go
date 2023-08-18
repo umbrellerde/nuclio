@@ -13,11 +13,6 @@ import (
 	"time"
 )
 
-const (
-	insertDelayedCall = "INSERT INTO delayed_calls (function_name, call_time, HTTP_verb, headers, body) VALUES ($1, $2, $3, $4, $5);"
-	connString        = "postgres://postgres:1234@postgres:5432/postgres" // TODO check if the change localhost -> postgres works
-)
-
 type Procrastinator struct {
 	conn   *pgx.Conn
 	Logger logger.Logger
@@ -49,9 +44,8 @@ func ensureTablesExist(conn *pgx.Conn) error {
 	return nil
 }
 
-func NewProcrastinator(logger logger.Logger) *Procrastinator {
+func NewProcrastinator() *Procrastinator {
 	// create DB connection
-	//conn, err := pgx.Connect(context.Background(), "postgres:1234@postgres:5432") -- old version TODO check which connString works
 	conn, err := pgx.Connect(context.Background(), connString)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
@@ -59,7 +53,7 @@ func NewProcrastinator(logger logger.Logger) *Procrastinator {
 	}
 	err = ensureTablesExist(conn)
 	return &Procrastinator{
-		conn, logger,
+		conn, nil,
 	}
 }
 
@@ -95,6 +89,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp, httpVerb, string(headers), string(body))
 	pro.Logger.Info("Response from database: %s", res.String())
 	if err != nil {
+		pro.Logger.Debug(err.Error())
 		pro.Logger.Error("Error occurred while inserting request values into database")
 	}
 
