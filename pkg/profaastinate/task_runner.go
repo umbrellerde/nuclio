@@ -64,7 +64,6 @@ func NewTaskrunner() *Taskrunner {
 
 func (t *Taskrunner) Start(sleepFor time.Duration) {
 
-	// TODO good way to stop the taskrunner without breaking DB connection etc.? => egal da eh immer neue DB gestartet wird?
 	// TODO => INIT DB skript
 
 	// TODO for testing -> modify NuclioURL above if this returns the correct port
@@ -203,6 +202,7 @@ func supervisor(calls []FunctionCall, nWorkers int, supervisorDone chan<- bool, 
 	for _, call := range calls {
 		tasks <- call
 	}
+	close(tasks)
 	// wait for all workers to finish
 	for i := 0; i < nWorkers; i++ {
 		<-workerDone
@@ -244,10 +244,10 @@ func worker(calls <-chan FunctionCall, workerDone chan<- bool, logger logger.Log
 		logger.Info("worker %s: received response %s with body %s", workerId, res.Status, string(body))
 	}
 
-	// tell the supervisor that this worker is workerDone
+	// tell the supervisor that this worker is done
 	workerDone <- true
 
-	logger.Debug("Worker %s is workerDone", workerId)
+	logger.Debug("Worker %s is done", workerId)
 }
 
 // method instead of function to access the taskrunner's logger
