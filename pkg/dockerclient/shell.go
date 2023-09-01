@@ -326,7 +326,7 @@ func (c *ShellClient) RunContainer(imageName string, runOptions *RunOptions) (st
 	}
 
 	runResult, err := c.cmdRunner.Run(
-		&cmdrunner.RunOptions{LogRedactions: c.redactedValues},
+		&cmdrunner.RunOptions{LogRedactions: c.redactedValues, LogOnlyOnFailure: true},
 		"docker run %s %s %s",
 		strings.Join(dockerArguments, " "),
 		imageName,
@@ -851,6 +851,7 @@ func (c *ShellClient) runCommand(runOptions *cmdrunner.RunOptions,
 
 	runOptions.LogRedactions = append(runOptions.LogRedactions, c.redactedValues...)
 
+	runOptions.LogOnlyOnFailure = true
 	runResult, err := c.cmdRunner.Run(runOptions, format, vars...)
 
 	if runOptions.CaptureOutputMode == cmdrunner.CaptureOutputModeStdout && runResult.Stderr != "" {
