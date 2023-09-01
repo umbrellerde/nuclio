@@ -60,15 +60,12 @@ func (i *invoker) invoke(ctx context.Context,
 	// for API backwards compatibility - enrich url in case it's not given
 	if createFunctionInvocationOptions.URL == "" &&
 		len(createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()) > 0 {
+		// In order for the taskrunner to be able to connect to its database, they have to be within a docker network.
+		// Each Nuclio function has an internal and an external IP. Using the docker network means that the dashboard
+		// can't connect to the functions using the internal IPs.
+		// ...InvocationURLs[0] is the internal, ...[1] is the external.
 		//invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[0]
 		invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[1]
-
-		i.logger.Debug("INVOKER.GO: invocation urls:")
-		i.logger.Debug("Function container %s", createFunctionInvocationOptions.FunctionInstance.GetStatus().ContainerImage)
-		for url, idx := range createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs() {
-			i.logger.Debug("%d: %s", idx, url)
-		}
-
 		i.logger.DebugWithCtx(ctx,
 			"Using default invocation URL",
 			"url", invocationURL)
