@@ -68,6 +68,7 @@ const (
 
 	// Profaastinate additional headers
 	FunctionCallAsync = "X-Nuclio-Async"
+	AsyncCallDeadline = "X-Nuclio-Async-Deadline"
 )
 
 func IsNuclioHeader(headerName string) bool {

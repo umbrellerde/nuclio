@@ -14,6 +14,12 @@ cd ..
 make build
 ```
 
+Or 
+
+```shell
+make dashboard
+```
+
 **Step 2:** Run your local Nuclio version.
 
 ```shell

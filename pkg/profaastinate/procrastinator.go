@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -24,24 +25,13 @@ func ensureTablesExist(conn *pgx.Conn) error {
 		    	id SERIAL PRIMARY KEY,
 				function_name VARCHAR ( 50 ) NOT NULL,
 				call_time TIMESTAMP NOT NULL,
+			    deadline TIMESTAMP NOT NULL,
 				HTTP_verb TEXT NOT NULL,
 				headers TEXT NOT NULL,
 				body TEXT NOT NULL
 			);
 		`)
-	if err != nil {
-		return err
-	}
-	_, err = conn.Exec(context.Background(), `
-			CREATE TABLE IF NOT EXISTS function_metadata(
-			    function_name VARCHAR ( 50 ) NOT NULL PRIMARY KEY,
-    			max_latency INT NOT NULL
-			);
-		`)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func NewProcrastinator() *Procrastinator {
@@ -64,6 +54,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	// read request data
 	name := request.Header.Get("x-nuclio-function-name") // TODO does Nuclio already check if the header exists?
 
+	// get current time
 	var timestamp time.Time
 	locStr := "Europe/Berlin"
 	location, locErr := time.LoadLocation(locStr)
@@ -74,9 +65,20 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 		timestamp = time.Now()
 	}
 
+	// set function deadline
+	deadlineStr := request.Header.Get("x-nuclio-async-deadline")
+	deadlineInt, deadlineErr := strconv.Atoi(deadlineStr)
+	pro.Logger.Info("Function has deadline of %d ms", deadlineInt)
+	if deadlineErr != nil {
+		deadlineInt = 0
+		pro.Logger.Debug("No function deadline found, using default")
+	}
+	deadline := timestamp.Add(time.Duration(deadlineInt) * time.Millisecond)
+
+	// get request header
 	httpVerb := request.Method
-	headers, headersErr := json.Marshal(request.Header) // string() required
-	body, bodyErr := io.ReadAll(request.Body)           // string() required
+	headers, headersErr := json.Marshal(request.Header)
+	body, bodyErr := io.ReadAll(request.Body)
 
 	// check if all required values exist
 	if name == "" || headersErr != nil || bodyErr != nil {
@@ -86,7 +88,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	}
 
 	// insert values into DB
-	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp, httpVerb, string(headers), string(body))
+	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp, deadline, httpVerb, string(headers), string(body))
 	pro.Logger.Info("Response from database: %s", res.String())
 	if err != nil {
 		pro.Logger.Debug(err.Error())

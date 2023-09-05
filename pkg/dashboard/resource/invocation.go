@@ -75,8 +75,8 @@ func (tr *invocationResource) OnAfterInitialize() error {
 	return nil
 }
 
-// TODO change
-var taskrunnerRunning bool = false
+// TODO change: find better place for taskrunner to be started
+var firstRequestExecuted bool = false
 
 func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
@@ -130,15 +130,15 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		tr.procastinator.Procrastinate(request)
 
 		// TODO start taskrunner
-		if !taskrunnerRunning {
+		if !firstRequestExecuted {
 			go tr.taskrunner.Start(time.Second * 10)
-			taskrunnerRunning = true
+			firstRequestExecuted = true
 		}
 
 		return
 	}
-	if request.Header.Get("executed-by-taskrunner") == "true" {
-		tr.Logger.Info("TASKRUNNER HAT FUNKTION AUSGEFÜHRT")
+	if request.Header.Get(headers.AsyncCallDeadline) == "true" {
+		tr.Logger.Info("Taskrunner hat Funktion ausgeführt")
 	}
 	// resolve the function host
 	invocationResult, err := tr.getPlatform().CreateFunctionInvocation(ctx, &platform.CreateFunctionInvocationOptions{
