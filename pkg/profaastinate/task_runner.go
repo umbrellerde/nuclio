@@ -62,16 +62,16 @@ func (f *FunctionCall) String() string {
 	return fmt.Sprintf("call(id=%d, name=%s, deadline=%s)", f.id, f.fname, f.deadline.String())
 }
 
-//////////////////////////////
-// hustler, fka. taskrunner //
-//////////////////////////////
+/////////////
+// hustler //
+/////////////
 
-type Taskrunner struct {
+type Hustler struct {
 	conn   *pgx.Conn
 	Logger logger.Logger
 }
 
-func NewTaskrunner() *Taskrunner {
+func NewHustler() *Hustler {
 
 	// database connection
 	conn, err := pgx.Connect(context.Background(), connString)
@@ -81,40 +81,40 @@ func NewTaskrunner() *Taskrunner {
 	}
 	err = ensureTablesExist(conn)
 
-	return &Taskrunner{
+	return &Hustler{
 		conn,
 		nil,
 	}
 }
 
-func (t *Taskrunner) Start(sleepFor time.Duration) {
+func (h *Hustler) Start(sleepFor time.Duration) {
 
 	stopIt := false
-	//go t.boredSupervisor("helloworld", 10, 2, &stopIt)
-	go t.swampedSupervisor(&stopIt, 2, 60_000, 60_000)
+	//go h.boredSupervisor("helloworld", 10, 2, &stopIt)
+	go h.swampedSupervisor(&stopIt, 2, 60_000, 60_000)
 
 	time.Sleep(120 * time.Second)
-	t.Logger.Info("Exiting bored supervisor")
+	h.Logger.Info("Exiting bored supervisor")
 	stopIt = true
 
-	t.Logger.Info("Finished with bored supervisor")
+	h.Logger.Info("Finished with bored supervisor")
 }
 
 // A swampedSupervisor performs urgent calls for _all_ functions
 // urgencyMs determines how close a call's deadline has to be to make it urgent (e.g. 10_000ms)
 // frequencyMs
-func (t *Taskrunner) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int) {
+func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int) {
 
-	t.Logger.Debug("swampedSupervisor started")
+	h.Logger.Debug("swampedSupervisor started")
 
 	// create and start the workers
 	tasks := make(chan FunctionCall)
 	defer close(tasks)
-	t.Logger.Debug("starting workers")
+	h.Logger.Debug("starting workers")
 	for i := 0; i < nWorkers; i++ {
 		workerId := "swampedWorker" + strconv.Itoa(i)
-		t.Logger.Debug("starting worker %s", workerId)
-		go t.worker(tasks, workerId)
+		h.Logger.Debug("starting worker %s", workerId)
+		go h.worker(tasks, workerId)
 	}
 
 	// every 'freqencyMs' seconds, look for new urgent calls and send them to the workers
@@ -124,24 +124,24 @@ func (t *Taskrunner) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, freque
 	for range ticker.C {
 
 		i++
-		t.Logger.Debug("iteration %d", i)
+		h.Logger.Debug("iteration %d", i)
 
-		// if the taskrunner tells the swampedSupervisor to stop, end the function
+		// if the hustler tells the swampedSupervisor to stop, end the function
 		if *stopIt {
 			goto theEnd // This is _very_ clean code, @google -- I'll be hearing from you
 		}
 
 		// get the calls from the database
-		calls := t.getUrgentCalls(urgencyMs)
+		calls := h.getUrgentCalls(urgencyMs)
 		nCalls := 0
 		for _, f := range calls {
 			for range f {
 				nCalls++
 			}
 		}
-		t.Logger.Debug("found %d calls", nCalls)
+		h.Logger.Debug("found %d calls", nCalls)
 		if len(calls) == 0 {
-			t.Logger.Error("no calls for swampedSupervisor")
+			h.Logger.Error("no calls for swampedSupervisor")
 			continue
 		}
 
@@ -149,24 +149,24 @@ func (t *Taskrunner) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, freque
 		for _, callsForName := range calls {
 			for _, call := range callsForName {
 				tasks <- call
-				t.Logger.Debug("Sent call %s to workers", call.String())
+				h.Logger.Debug("Sent call %s to workers", call.String())
 			}
 		}
 	}
 
 theEnd:
-	t.Logger.Debug("SwampedSupervisor is finished")
+	h.Logger.Debug("SwampedSupervisor is finished")
 }
 
 // getUrgentCalls gets and deletes the urgent calls from the database
 // urgencyMs: e.g., calls that are due in 10_000 ms are urgent
-func (t *Taskrunner) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
+func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 
 	ctx := context.Background()
 	calls := make(map[string][]FunctionCall)
 
 	// begin and defer the commit of a new transaction
-	tx, err := t.conn.Begin(context.Background())
+	tx, err := h.conn.Begin(context.Background())
 	if err != nil {
 		return nil
 	}
@@ -179,29 +179,29 @@ func (t *Taskrunner) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 
 	// get the urgent calls
 	rows, err := tx.Query(ctx, UrgentCallsQuery(urgencyMs))
-	t.Logger.Debug("Urgent calls query: " + UrgentCallsQuery(urgencyMs))
+	h.Logger.Debug("Urgent calls query: " + UrgentCallsQuery(urgencyMs))
 	if err != nil {
-		t.Logger.Error(err)
-		t.Logger.Error("could not retrieve urgent calls from delayed_calls: " + err.Error())
+		h.Logger.Error(err)
+		h.Logger.Error("could not retrieve urgent calls from delayed_calls: " + err.Error())
 	}
 
 	// store the urgent calls in a map
 	for rows.Next() {
-		call := NewFunctionCallFromDB(&rows, t.Logger)
+		call := NewFunctionCallFromDB(&rows, h.Logger)
 		calls[call.fname] = append(calls[call.fname], *call)
 	}
 
 	// delete calls from DB
 	_, err = tx.Exec(context.Background(), `DELETE FROM delayed_calls WHERE id = any($1)`, getIds(calls))
 	if err != nil {
-		t.Logger.Warn("Error while trying to delete urgent calls from DB")
+		h.Logger.Warn("Error while trying to delete urgent calls from DB")
 	}
 
 	// log all urgent ids for debugging
-	t.Logger.Debug("Ids of urgent function calls: ")
+	h.Logger.Debug("Ids of urgent function calls: ")
 	for _, fcalls := range calls {
 		for _, call := range fcalls {
-			t.Logger.Debug(call.id)
+			h.Logger.Debug(call.id)
 		}
 	}
 
@@ -209,33 +209,44 @@ func (t *Taskrunner) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 }
 
 // The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
-func (t *Taskrunner) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
+func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
+
+	// go to DB
+	// 1. get next 'batchSize' function calls (ordered by deadline)
+	// 2. create a map with function name -> [call1, call2, ...]
+	// 3a. if a channel + workers exist, send the new calls
+	// 3b. if no channel exists, create channel, stark workers, send tasks
+	// repeat
+	// ===
+	// reason: there should only be one bored supervisor in order for the DB connection not to be shared
+	// MAYBE: use channel from border supervisor to hustler to make sure the connection is ready for the
+	// swamped supervisor to be used when switching between them
 
 	ctx := context.Background()
 
 	// create workers
 	calls := make(chan FunctionCall)
 	for i := 0; i < nWorkers; i++ {
-		go t.worker(calls, functionName+strconv.Itoa(i))
+		go h.worker(calls, functionName+strconv.Itoa(i))
 	}
 
 	for !*stopIt {
 
 		// get calls for functionName
-		tx, _ := t.conn.Begin(ctx)
+		tx, _ := h.conn.Begin(ctx)
 		rows, err := tx.Query(ctx, `SELECT * FROM delayed_calls WHERE function_name = $1 ORDER BY deadline ASC LIMIT $2`, functionName, batchSize)
 		if err != nil {
-			t.Logger.Error("query failed!", err.Error())
+			h.Logger.Error("query failed!", err.Error())
 		}
 
 		// iterate over all calls
 		var ids []int
 		for rows.Next() {
 			// forward call to workers
-			t.Logger.Debug("supervisor: getting new call to send to workers....")
-			call := NewFunctionCallFromDB(&rows, t.Logger)
+			h.Logger.Debug("supervisor: getting new call to send to workers....")
+			call := NewFunctionCallFromDB(&rows, h.Logger)
 			calls <- *call
-			t.Logger.Debug("supervisor: forwarded call to worker node: %s", call.String())
+			h.Logger.Debug("supervisor: forwarded call to worker node: %s", call.String())
 
 			// store IDs for later deletion
 			ids = append(ids, call.id)
@@ -244,26 +255,26 @@ func (t *Taskrunner) boredSupervisor(functionName string, batchSize int, nWorker
 		// delete call from DB
 		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
 		if err != nil {
-			t.Logger.Warn("bored supervisor encountered error while trying to delete calls from DB: %s\", err.Error()")
+			h.Logger.Warn("bored supervisor encountered error while trying to delete calls from DB: %s\", err.Error()")
 		}
 
 		// once all executed calls are deleted from the DB, commit the transaction
-		//t.Logger.Debug("supervisor: all calls are deleted!")
+		//h.Logger.Debug("supervisor: all calls are deleted!")
 		err = tx.Commit(ctx)
 		if err != nil {
-			t.Logger.Error("error during commit of transaction in supervisor", err.Error())
+			h.Logger.Error("error during commit of transaction in supervisor", err.Error())
 			return
 		}
 	}
-	t.Logger.Debug("supervisor: closing calls channel to stop all workers...")
+	h.Logger.Debug("supervisor: closing calls channel to stop all workers...")
 	// tell the workers to go home
 	close(calls)
 }
 
 // A worker receives tasks through a channel and executes functions calls until the channel is closed
-func (t *Taskrunner) worker(calls <-chan FunctionCall, workerId string) {
+func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
 
-	t.Logger.Debug("worker %s started", workerId)
+	h.Logger.Debug("worker %s started", workerId)
 
 	// take a call from channel, send the request to Nuclio, and log the response
 	client := &http.Client{}
@@ -277,28 +288,28 @@ func (t *Taskrunner) worker(calls <-chan FunctionCall, workerId string) {
 					// make it synchronous
 					req.Header.Set("x-nuclio-async", "false")
 				} else if strings.ToLower(header) == "x-nuclio-async-deadline" {
-					// don't send the deadline when calling function synchronously
+					// don'h send the deadline when calling function synchronously
 					continue
 				} else {
 					req.Header.Set(header, value)
 				}
 			}
 		}
-		req.Header.Set("executed-by-taskrunner", "true")
+		req.Header.Set("executed-by-hustler", "true")
 
 		// perform the request
-		t.Logger.Info("Executing asynchronous request %d now", call.id)
+		h.Logger.Info("Executing asynchronous request %d now", call.id)
 		res, err2 := client.Do(req)
 		if err1 != nil || err2 != nil {
-			t.Logger.Error("Error while sending request to Nuclio")
+			h.Logger.Error("Error while sending request to Nuclio")
 		}
 
 		// log the response
 		body, _ := io.ReadAll(res.Body)
-		t.Logger.Info("worker %s: received response %s with body %s", workerId, res.Status, string(body))
+		h.Logger.Info("worker %s: received response %s with body %s", workerId, res.Status, string(body))
 	}
 
-	t.Logger.Debug("Worker %s is done", workerId)
+	h.Logger.Debug("Worker %s is done", workerId)
 }
 
 //////////////////////

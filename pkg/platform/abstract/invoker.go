@@ -60,7 +60,7 @@ func (i *invoker) invoke(ctx context.Context,
 	// for API backwards compatibility - enrich url in case it's not given
 	if createFunctionInvocationOptions.URL == "" &&
 		len(createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()) > 0 {
-		// In order for the taskrunner to be able to connect to its database, they have to be within a docker network.
+		// In order for the hustler to be able to connect to its database, they have to be within a docker network.
 		// Each Nuclio function has an internal and an external IP. Using the docker network means that the dashboard
 		// can't connect to the functions using the internal IPs.
 		// ...InvocationURLs[0] is the internal, ...[1] is the external.

@@ -39,7 +39,7 @@ import (
 type invocationResource struct {
 	*resource
 	procastinator *profaastinate.Procrastinator
-	taskrunner    *profaastinate.Taskrunner
+	hustler       *profaastinate.Hustler
 }
 
 func (tr *invocationResource) ExtendMiddlewares() error {
@@ -67,15 +67,15 @@ func (tr *invocationResource) OnAfterInitialize() error {
 	pLogger.Info("Hello World I just woke um from nothing")
 	tr.procastinator.Logger = pLogger
 
-	// create the taskrunner
-	tLogger := tr.Logger.GetChild("taskrunner")
+	// create the hustler
+	tLogger := tr.Logger.GetChild("hustler")
 	tLogger.Info("Hello there, I write about people running tasks!")
-	tr.taskrunner.Logger = tLogger
+	tr.hustler.Logger = tLogger
 
 	return nil
 }
 
-// TODO change: find better place for taskrunner to be started
+// TODO change: find better place for hustler to be started
 var firstRequestExecuted bool = false
 
 func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
@@ -129,16 +129,16 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		responseWriter.WriteHeader(204)
 		tr.procastinator.Procrastinate(request)
 
-		// TODO start taskrunner
+		// TODO start hustler
 		if !firstRequestExecuted {
-			go tr.taskrunner.Start(time.Second * 10)
+			go tr.hustler.Start(time.Second * 10)
 			firstRequestExecuted = true
 		}
 
 		return
 	}
 	if request.Header.Get(headers.AsyncCallDeadline) == "true" {
-		tr.Logger.Info("Taskrunner hat Funktion ausgeführt")
+		tr.Logger.Info("Hustler hat Funktion ausgeführt")
 	}
 	// resolve the function host
 	invocationResult, err := tr.getPlatform().CreateFunctionInvocation(ctx, &platform.CreateFunctionInvocationOptions{
@@ -210,7 +210,7 @@ func (tr *invocationResource) resolveInvokeTimeout(invokeTimeout string) (time.D
 var invocationResourceInstance = &invocationResource{
 	resource:      newResource("api/function_invocations", []restful.ResourceMethod{}),
 	procastinator: profaastinate.NewProcrastinator(),
-	taskrunner:    profaastinate.NewTaskrunner(),
+	hustler:       profaastinate.NewHustler(),
 }
 
 func init() {
