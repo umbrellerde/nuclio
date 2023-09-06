@@ -63,6 +63,13 @@ def get_cpu_share(start, end, current):
         return "{:.2f}".format(float(exact))
 
 if __name__ == "__main__":
+
+    # if no parameters are passed, print a help text explaining the usage
+    if len(sys.argv) < 2:
+        print("Usage: python3 generate_load.py <duration in minutes of test>")
+        print("This will create a new docker container that is under a varying amount of load for the given duration.")
+        sys.exit(0)
+
     build_image("../loadGenerator")
     id = run_container("load_generator", "--cpu 0")
     print("Container id: " + id)

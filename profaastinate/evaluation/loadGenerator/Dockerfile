@@ -1,4 +1,4 @@
-# https://github.com/containerstack/docker-cpustress/blob/master/Dockerfile
+# taken from https://github.com/containerstack/docker-cpustress/blob/master/Dockerfile
 FROM containerstack/alpine:latest
 MAINTAINER Remon Lam [remon@containerstack.io]
 
