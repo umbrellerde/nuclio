@@ -234,8 +234,6 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 	h.Logger.Debug("bored query: %s", query)
 
 	callsForFunctions := make(map[string]chan FunctionCall)
-	// the boolean value doesn't matter; if a function name is in this map, the function is assumed to have workers
-	functionHasWorkers := make(map[string]bool)
 
 	for !*stopIt {
 
@@ -262,7 +260,7 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 		for functionName, functionCalls := range calls {
 
 			// create new workers & channel
-			if _, ok := functionHasWorkers[functionName]; !ok {
+			if _, ok := callsForFunctions[functionName]; !ok {
 				// new channel
 				callsForFunctions[functionName] = make(chan FunctionCall)
 				// new workers
@@ -276,7 +274,6 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 				for i := 0; i < nWorkers; i++ {
 					go h.worker(callsForFunctions[functionName], fmt.Sprintf("Worker(%s, %d)", functionName, i))
 				}
-				functionHasWorkers[functionName] = true
 			}
 
 			// forward calls to workers
