@@ -214,19 +214,9 @@ func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 
 func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions map[string]int, stopIt *bool) {
 
-	// plan for boredSupervisor 2.0
-	// go to DB
-	// 1. get next 'batchSize' function calls (ordered by deadline)
-	// 2. create a map with function name => [call1, call2, ...]
-	// 3a. if a channel + workers exist, send the new calls
-	// 3b. if no channel exists, create channel, stark workers, send tasks
-	// repeat
-	// ===
 	// reason: there should only be one bored supervisor in order for the DB connection not to be shared
 	// MAYBE: use channel from border supervisor to hustler to make sure the connection is ready for the
 	// swamped supervisor to be used when switching between them
-
-	// TODO logs for debugging
 
 	ctx := context.Background()
 

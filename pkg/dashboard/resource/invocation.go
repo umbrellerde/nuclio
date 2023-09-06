@@ -120,6 +120,10 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 	// - first step, put the complete function call (headers etc) into a db
 	// TODO consider case in which the header has multiple values => the if statement would probably cause an error
 
+	// start the megavisor to monitor cpu usage and switch between bored and swamped modes
+	megavisor := profaastinate.NewMegavisor(15, 1_000, 10_000)
+	go megavisor.Start()
+
 	tr.Logger.Info(profaastinate.NuclioURL())
 
 	asyncHeader := request.Header.Get(headers.FunctionCallAsync)

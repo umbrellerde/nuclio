@@ -5,6 +5,7 @@ import subprocess
 import os
 import sys
 import time
+import platform
 
 # function that runs a docker container based on an image and commands using subprocess
 # commands can be multiple parameters in one string that are split by spaces
@@ -12,7 +13,7 @@ import time
 def run_container(image, commands):
     # run the container
     # generate arguments list by splitting commands up into a list
-    container = subprocess.run(["docker", "run", "-d", image] + commands.split(" "), stdout=subprocess.PIPE)
+    container = subprocess.run(["docker", "run", "--name", "load_generator", "-d", image] + commands.split(" "), stdout=subprocess.PIPE)
 
     # get the container id
     container_id = container.stdout.decode('utf-8').strip()
@@ -37,6 +38,7 @@ def stop_container(container_id):
     # stop the container, ignoring the output
     print("Stopping container " + container_id)
     subprocess.run(["docker", "stop", container_id], stdout=subprocess.DEVNULL)
+    subprocess.run(["docker", "rm", container_id], stdout=subprocess.DEVNULL)
 
 # function that gets three parameters: the experiment start, the end, and the current time.
 # depending on this, it wil output the cpu share that should be avaliable.
@@ -58,9 +60,7 @@ def get_cpu_share(start, end, current):
     # if the current time is in the middle third of the experiment
     else:
         # calculate the s-curve
-        exact = str(0.95 - 0.8 * (current - length/3) ** 2 / (length/3) ** 2)
-        # round it to 2 decimals before returning
-        return "{:.2f}".format(float(exact))
+        return str(0.95 - 0.8 * (current - length/3) ** 2 / (length/3) ** 2)
 
 if __name__ == "__main__":
 
@@ -86,16 +86,18 @@ if __name__ == "__main__":
     duration = int(sys.argv[1])
     end = start + duration * 60
 
+    cpu_count = 5 if platform.system() == "Darwin" else os.cpu_count()
     # set the cpus of the load_generator container to get_cpu_share for the duration of the experiment
     while time.time() < end:
         curr_time = time.time()
         share = get_cpu_share(start, end, curr_time)
         # to get the numbers of cpu that should be available, multiply the share with the number of cpus on the machine
-        share_all_cpus = str(float(share) * os.cpu_count())
+        share_all_cpus = str(round(float(share) * cpu_count, 2))
         update_cpus(id, share_all_cpus)
         # on every ~10th iteration, print the current cpu share
         if int(curr_time) % 10 == 0:
-            print("Current cpu share: " + share)
+            print("Current cpu share:", share)
+            print("Passed to docker:", share_all_cpus)
         time.sleep(1)
 
     # stop the container in the end
