@@ -299,6 +299,11 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 		}
 	}
 
+	// close channels
+	for _, channel := range callsForFunctions {
+		close(channel)
+	}
+
 	h.Logger.Debug("slightlyLessBoredSupervisor done")
 }
 
