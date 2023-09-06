@@ -87,17 +87,21 @@ func NewHustler() *Hustler {
 	}
 }
 
-func (h *Hustler) Start(sleepFor time.Duration) {
+func (h *Hustler) Start() {
 
 	stopIt := false
 	//go h.boredSupervisor("helloworld", 10, 2, &stopIt)
-	go h.swampedSupervisor(&stopIt, 2, 60_000, 60_000)
+	//go h.swampedSupervisor(&stopIt, 2, 60_000, 60_000)
+	workersForFunctions := map[string]int{
+		"helloworld1": 2,
+		"helloworld2": 3,
+	}
+	go h.slightlyLessBoredSupervisor(5, workersForFunctions, &stopIt)
 
-	time.Sleep(120 * time.Second)
-	h.Logger.Info("Exiting bored supervisor")
+	time.Sleep(60 * time.Second)
 	stopIt = true
 
-	h.Logger.Info("Finished with bored supervisor")
+	h.Logger.Info("Finished with supervisor")
 }
 
 // A swampedSupervisor performs urgent calls for _all_ functions
@@ -208,12 +212,12 @@ func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 	return calls
 }
 
-// The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
-func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
+func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions map[string]int, stopIt *bool) {
 
+	// plan for boredSupervisor 2.0
 	// go to DB
 	// 1. get next 'batchSize' function calls (ordered by deadline)
-	// 2. create a map with function name -> [call1, call2, ...]
+	// 2. create a map with function name => [call1, call2, ...]
 	// 3a. if a channel + workers exist, send the new calls
 	// 3b. if no channel exists, create channel, stark workers, send tasks
 	// repeat
@@ -221,6 +225,85 @@ func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers i
 	// reason: there should only be one bored supervisor in order for the DB connection not to be shared
 	// MAYBE: use channel from border supervisor to hustler to make sure the connection is ready for the
 	// swamped supervisor to be used when switching between them
+
+	// TODO logs for debugging
+
+	ctx := context.Background()
+
+	query := `SELECT * FROM delayed_calls ORDER BY deadline ASC LIMIT $1;`
+	h.Logger.Debug("bored query: %s", query)
+
+	callsForFunctions := make(map[string]chan FunctionCall)
+	// the boolean value doesn't matter; if a function name is in this map, the function is assumed to have workers
+	functionHasWorkers := make(map[string]bool)
+
+	for !*stopIt {
+
+		// start of transaction
+		tx, err := h.conn.Begin(ctx)
+		if err != nil {
+			h.Logger.Warn("Error while trying to begin new transaction: ", err.Error())
+		}
+
+		// gets calls from database
+		rows, err := tx.Query(ctx, query, batchSize)
+		if err != nil {
+			h.Logger.Warn("Error while querying DB for new calls: ", err.Error())
+		}
+
+		// read calls into map[fname][]calls
+		calls := make(map[string][]FunctionCall)
+		for rows.Next() {
+			call := NewFunctionCallFromDB(&rows, h.Logger)
+			calls[call.fname] = append(calls[call.fname], *call)
+		}
+
+		// create workers and forward calls to them
+		for functionName, functionCalls := range calls {
+
+			// create new workers & channel
+			if _, ok := functionHasWorkers[functionName]; !ok {
+				// new channel
+				callsForFunctions[functionName] = make(chan FunctionCall)
+				// new workers
+				var nWorkers int
+				if _, ok := workersForFunctions[functionName]; ok {
+					nWorkers = workersForFunctions[functionName]
+				} else {
+					// TODO default number of workers?
+					nWorkers = 1
+				}
+				for i := 0; i < nWorkers; i++ {
+					go h.worker(callsForFunctions[functionName], fmt.Sprintf("Worker(%s, %d)", functionName, i))
+				}
+				functionHasWorkers[functionName] = true
+			}
+
+			// forward calls to workers
+			for _, call := range functionCalls {
+				callsForFunctions[functionName] <- call
+			}
+		}
+
+		// delete call from DB
+		ids := getIds(calls)
+		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
+		if err != nil {
+			h.Logger.Warn("slightlyLessBoredSupervisor encountered error while trying to delete calls from DB: %s", err.Error())
+		}
+
+		// commit transactions
+		err = tx.Commit(ctx)
+		if err != nil {
+			h.Logger.Warn("Error while committing transaction: ", err.Error())
+		}
+	}
+
+	h.Logger.Debug("slightlyLessBoredSupervisor done")
+}
+
+// The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
+func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
 
 	ctx := context.Background()
 
@@ -255,7 +338,7 @@ func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers i
 		// delete call from DB
 		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
 		if err != nil {
-			h.Logger.Warn("bored supervisor encountered error while trying to delete calls from DB: %s\", err.Error()")
+			h.Logger.Warn("bored supervisor encountered error while trying to delete calls from DB: %s", err.Error())
 		}
 
 		// once all executed calls are deleted from the DB, commit the transaction
@@ -288,7 +371,7 @@ func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
 					// make it synchronous
 					req.Header.Set("x-nuclio-async", "false")
 				} else if strings.ToLower(header) == "x-nuclio-async-deadline" {
-					// don'h send the deadline when calling function synchronously
+					// don't send the deadline when calling function synchronously
 					continue
 				} else {
 					req.Header.Set(header, value)

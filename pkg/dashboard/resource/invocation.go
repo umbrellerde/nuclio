@@ -131,7 +131,7 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 
 		// TODO start hustler
 		if !firstRequestExecuted {
-			go tr.hustler.Start(time.Second * 10)
+			go tr.hustler.Start()
 			firstRequestExecuted = true
 		}
 
