@@ -67,11 +67,12 @@ func (f *FunctionCall) String() string {
 /////////////
 
 type Hustler struct {
-	conn   *pgx.Conn
-	Logger logger.Logger
+	conn      *pgx.Conn
+	Logger    logger.Logger
+	Megavisor *Megavisor
 }
 
-func NewHustler() *Hustler {
+func NewHustler(megavisor *Megavisor) *Hustler {
 
 	// database connection
 	conn, err := pgx.Connect(context.Background(), connString)
@@ -84,30 +85,67 @@ func NewHustler() *Hustler {
 	return &Hustler{
 		conn,
 		nil,
+		megavisor,
 	}
 }
 
 func (h *Hustler) Start() {
 
-	stopIt := false
-	//go h.boredSupervisor("helloworld", 10, 2, &stopIt)
-	//go h.swampedSupervisor(&stopIt, 2, 60_000, 60_000)
+	h.Logger.Debug("Hustler started")
+
+	// params for swamped supervisor
+	nWorkers, urgencyMs, frequencyMs := 2, 10_000, 10_000
+	// params for bored supervisor
+	batchSize := 10
 	workersForFunctions := map[string]int{
 		"helloworld1": 2,
-		"helloworld2": 3,
+		"helloworld2": 2,
 	}
-	go h.slightlyLessBoredSupervisor(5, workersForFunctions, &stopIt)
 
-	time.Sleep(60 * time.Second)
-	stopIt = true
+	// begin by starting swamped supervisor
+	stopSwamped, stopBored := false, true
+	supervisorDone := make(chan bool)
+	go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
 
-	h.Logger.Info("Finished with supervisor")
+	h.Logger.Debug("Hustler started first swamped supervisor")
+
+	for x := range h.Megavisor.modeChannel {
+
+		// TODO wait until they're completely stopped before starting the new one?
+		// it could be the case that transactions overlap (as both supervisors use the same DB connection)
+		// which, in turn, would result in 'connection busy'
+
+		h.Logger.Debug("Hustler received new mode: %v", x)
+
+		switch x {
+		case Bored:
+			h.Logger.Debug("Hustler is stopping the swamped supervisor")
+			// stop the swamped supervisor
+			stopSwamped, stopBored = true, false
+			// wait until it's completely done
+			<-supervisorDone
+			h.Logger.Debug("Hustler thinks the swamped supervisor is done")
+			// start bored supervisor
+			go h.slightlyLessBoredSupervisor(batchSize, workersForFunctions, &stopBored, &supervisorDone)
+			h.Logger.Debug("Hustler started the bored supervisor")
+		case Swamped:
+			h.Logger.Debug("Hustler is stopping the bored supervisor")
+			// stop the bored supervisor
+			stopSwamped, stopBored = false, true
+			// wait until it's completely done
+			<-supervisorDone
+			h.Logger.Debug("Hustler thinks the bored supervisor is done")
+			// start swamped supervisor
+			go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
+			h.Logger.Debug("Hustler started the swamped supervisor")
+		}
+	}
 }
 
 // A swampedSupervisor performs urgent calls for _all_ functions
 // urgencyMs determines how close a call's deadline has to be to make it urgent (e.g. 10_000ms)
 // frequencyMs
-func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int) {
+func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int, supervisorDone *chan bool) {
 
 	h.Logger.Debug("swampedSupervisor started")
 
@@ -160,6 +198,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 
 theEnd:
 	h.Logger.Debug("SwampedSupervisor is finished")
+	*supervisorDone <- true
 }
 
 // getUrgentCalls gets and deletes the urgent calls from the database
@@ -212,7 +251,7 @@ func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 	return calls
 }
 
-func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions map[string]int, stopIt *bool) {
+func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions map[string]int, stopIt *bool, supervisorDone *chan bool) {
 
 	// reason: there should only be one bored supervisor in order for the DB connection not to be shared
 	// MAYBE: use channel from border supervisor to hustler to make sure the connection is ready for the
@@ -292,9 +331,10 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 	}
 
 	h.Logger.Debug("slightlyLessBoredSupervisor done")
+	*supervisorDone <- true
 }
 
-// The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
+/*// The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
 func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
 
 	ctx := context.Background()
@@ -344,7 +384,7 @@ func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers i
 	h.Logger.Debug("supervisor: closing calls channel to stop all workers...")
 	// tell the workers to go home
 	close(calls)
-}
+}*/
 
 // A worker receives tasks through a channel and executes functions calls until the channel is closed
 func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {

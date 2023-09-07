@@ -2,6 +2,7 @@ package profaastinate
 
 import (
 	"fmt"
+	"github.com/nuclio/logger"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"runtime"
 	"time"
@@ -24,30 +25,38 @@ type Megavisor struct {
 	capacity             int
 	measurementFrequency int // in ms | recommended value:  1_000
 	modeSwitchFrequency  int // in ms | recommended value: 10_000
+	boredBoundary        int
+	swampedBoundary      int
 	mode                 Mode
+	modeChannel          chan Mode
+	Logger               logger.Logger
 }
 
-func NewMegavisor(capacity, measurementFrequency, modeSwitchFrequency int) *Megavisor {
+func NewMegavisor(capacity int, measurementFrequency int, modeSwitchFrequency int, boredBoundary int, swampedBoundary int, logger logger.Logger) *Megavisor {
 	return &Megavisor{
 		make([]float64, capacity),
 		capacity,
 		measurementFrequency,
 		modeSwitchFrequency,
+		boredBoundary,
+		swampedBoundary,
 		Swamped, // start in swamped mode by default
+		make(chan Mode),
+		logger,
 	}
 }
 
-func (s *Megavisor) store(value float64) {
-	for i := len(s.values) - 1; i > 0; i-- {
-		s.values[i] = s.values[i-1]
+func (m *Megavisor) store(value float64) {
+	for i := len(m.values) - 1; i > 0; i-- {
+		m.values[i] = m.values[i-1]
 	}
-	s.values[0] = value
+	m.values[0] = value
 }
 
-func (s *Megavisor) avg() float64 {
+func (m *Megavisor) avg() float64 {
 	sum := 0.0
-	nonNulls := len(s.values)
-	for i, x := range s.values {
+	nonNulls := len(m.values)
+	for i, x := range m.values {
 		if x == 0 {
 			nonNulls = i
 			break
@@ -57,11 +66,13 @@ func (s *Megavisor) avg() float64 {
 	return sum / float64(nonNulls)
 }
 
-func (s *Megavisor) Start() {
+func (m *Megavisor) Start() {
+
+	m.Logger.Debug("now in start")
 
 	// check if Mac users want special treatment
 	if runtime.GOOS == "darwin" {
-		fmt.Printf("You are not using Linux, so the Docker VM probably doesn't have access to all CPU cores. Please update numCpuFactor accordingly\n")
+		fmt.Printf("You are not using Linux, so the Docker VM probably doesn't have access to all CPU cores. Please update numCpuFactor accordingly")
 		numCpuFactor = 2
 	}
 
@@ -69,19 +80,22 @@ func (s *Megavisor) Start() {
 		// store curr val
 		usage, _ := cpu.Percent(time.Second, false)
 		usageAdj := usage[0] * numCpuFactor
-		s.store(usageAdj)
+		m.store(usageAdj)
 
 		// get & print avg
-		avg := s.avg()
-		fmt.Printf("average cpu usage over last %d ms was %.2f., current is %.2f\n", s.modeSwitchFrequency, avg, usageAdj)
+		avg := m.avg()
+		m.Logger.Debug("average cpu usage over last %d ms was %.2f., current is %.2f", m.modeSwitchFrequency, avg, usageAdj)
 
 		// determine whether to switch modes
-		if avg > 90 && s.mode != Swamped {
-			fmt.Println("now in swamped mode")
-			s.mode = Swamped
-		} else if avg < 80 && s.mode == Bored {
-			fmt.Println("boring!")
-			s.mode = Bored
+		// TODO turn 80 & 90 into parameters
+		if avg >= float64(m.swampedBoundary) && m.mode != Swamped {
+			m.Logger.Info("It's my time to shine! (swamped mode activated)")
+			m.mode = Swamped
+			m.modeChannel <- Swamped
+		} else if avg <= float64(m.boredBoundary) && m.mode != Bored {
+			m.Logger.Info("This is boring, I could do so much more!")
+			m.mode = Bored
+			m.modeChannel <- Bored
 		}
 	}
 }

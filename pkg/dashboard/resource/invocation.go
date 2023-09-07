@@ -39,6 +39,7 @@ import (
 type invocationResource struct {
 	*resource
 	procastinator *profaastinate.Procrastinator
+	megavisor     *profaastinate.Megavisor
 	hustler       *profaastinate.Hustler
 }
 
@@ -67,10 +68,16 @@ func (tr *invocationResource) OnAfterInitialize() error {
 	pLogger.Info("Hello World I just woke um from nothing")
 	tr.procastinator.Logger = pLogger
 
+	// create the megavisor
+	mLogger := tr.Logger.GetChild("megavisor")
+	mLogger.Info("I'm better than the supervisor... I'm the megavisor!")
+	tr.megavisor.Logger = mLogger
+
 	// create the hustler
 	tLogger := tr.Logger.GetChild("hustler")
 	tLogger.Info("Hello there, I write about people running tasks!")
 	tr.hustler.Logger = tLogger
+	tr.hustler.Megavisor = tr.megavisor
 
 	return nil
 }
@@ -119,13 +126,6 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 	// - immediately return a 204 status code
 	// - first step, put the complete function call (headers etc) into a db
 	// TODO consider case in which the header has multiple values => the if statement would probably cause an error
-
-	// start the megavisor to monitor cpu usage and switch between bored and swamped modes
-	megavisor := profaastinate.NewMegavisor(15, 1_000, 10_000)
-	go megavisor.Start()
-
-	tr.Logger.Info(profaastinate.NuclioURL())
-
 	asyncHeader := request.Header.Get(headers.FunctionCallAsync)
 	if strings.TrimSpace(strings.ToLower(asyncHeader)) == "true" {
 		// Immediately return
@@ -133,8 +133,12 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 		responseWriter.WriteHeader(204)
 		tr.procastinator.Procrastinate(request)
 
-		// TODO start hustler
+		// start hustler & megavisor
 		if !firstRequestExecuted {
+
+			// start the megavisor to monitor cpu usage and switch between bored and swamped modes
+			go tr.megavisor.Start()
+
 			go tr.hustler.Start()
 			firstRequestExecuted = true
 		}
@@ -214,7 +218,8 @@ func (tr *invocationResource) resolveInvokeTimeout(invokeTimeout string) (time.D
 var invocationResourceInstance = &invocationResource{
 	resource:      newResource("api/function_invocations", []restful.ResourceMethod{}),
 	procastinator: profaastinate.NewProcrastinator(),
-	hustler:       profaastinate.NewHustler(),
+	megavisor:     profaastinate.NewMegavisor(15, 1_000, 10_000, 80, 90, nil),
+	hustler:       profaastinate.NewHustler(nil),
 }
 
 func init() {
