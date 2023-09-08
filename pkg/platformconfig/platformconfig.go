@@ -31,7 +31,7 @@ import (
 	"github.com/nuclio/logger"
 	"github.com/v3io/scaler/pkg/scalertypes"
 	autosv2 "k8s.io/api/autoscaling/v2"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apiresource "k8s.io/apimachinery/pkg/api/resource"
 )
 
@@ -88,6 +88,10 @@ func NewPlatformConfig(configurationPath string) (*Config, error) {
 		config.Kind = common.KubePlatformName
 	} else {
 		config.Kind = common.LocalPlatformName
+
+		// Profaastinate: run inside the profaastinate docker network
+		// TODO this means that we need to always have the profaastinate network, otherwise the functions can't run!
+		config.Local.DefaultFunctionContainerNetworkName = "profaastinate"
 	}
 
 	// enrich opa configuration

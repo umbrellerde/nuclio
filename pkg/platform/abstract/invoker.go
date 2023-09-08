@@ -64,6 +64,7 @@ func (i *invoker) invoke(ctx context.Context,
 		// Each Nuclio function has an internal and an external IP. Using the docker network means that the dashboard
 		// can't connect to the functions using the internal IPs.
 		// ...InvocationURLs[0] is the internal, ...[1] is the external.
+		// TODO Trever vs. Valentin: On Linux, only the internal URL works?!?!?!
 		//invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[0]
 		invocationURL := createFunctionInvocationOptions.FunctionInstance.GetStatus().InvocationURLs()[1]
 		i.logger.DebugWithCtx(ctx,

@@ -7,6 +7,11 @@ Create a docker network for all containers to live in:
 docker network create profaastinate
 ```
 
+Start the postgres database:
+```shell
+./run-db.sh
+```
+
 **Step 1:** Build your local Nuclio version.
 
 ```shell
@@ -57,8 +62,6 @@ eval "$COMMAND"
 - Die von Nuclio erstellten Container für die Funktionen auch weg  
 
 ## ProFaaStinate
-
-- Requests kommen im Dashboad an, im Code: nuclio &rarr; pkg &rarr; dashboard &rarr; resource &rarr; invocation.go &rarr; `handleRequest(...)`
 
 **Useful commands:**
 ```shell
