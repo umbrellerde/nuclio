@@ -1,5 +1,3 @@
-# this code runs as a nuclio function. Thus, context and event are filled by the nuclio runtime.
-# Import everything we need to upload a file to minio, and to read the metadata of a pdf file
 import os
 import json
 import subprocess
@@ -7,19 +5,34 @@ import time
 import datetime
 import sys
 import base64
-import minio
+from minio import Minio
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 
+def check(context, event):
 
-# context and event are passed by nuclio. context.logger is used to log to the nuclio console, event.body contains a base64 encoded string of the pdf file
-def entrypoint(context, event):
-    # load the pdf into a file
-    with open("/tmp/file.pdf", "wb") as file:
-        file.write(base64.b64decode(event.body))
-    
-    # get the metadata of the pdf file
+    context.logger.debug("starting function")
+
+    # get filename to read from request header
+    if 'X-Check-Filename' in event.headers:
+        filename = event.headers['X-Check-Filename']
+    else:
+        context.logger.warn("no filename to retrieve from minio, using 'test.pdf'")
+        filename = "test.pdf"
+
+    # get file
+    # TODO change 'host.docker.internal' to 'localhost' on linux (?)
+    minioClient = Minio("host.docker.internal:9000", access_key="minioadmin", secret_key="minioadmin", secure=False)
+    file = minioClient.fget_object("profaastinate", filename, "/tmp/file.pdf")
+
+    # parse the PDF to access metadata
     parser = PDFParser(open("/tmp/file.pdf", "rb"))
     document = PDFDocument(parser)
 
-    print(document.info)
+    # return parsed metadata
+    return context.Response(
+        body=str(document.info), 
+        headers={}, 
+        content_type='text/plain', 
+        status_code=200
+        )
