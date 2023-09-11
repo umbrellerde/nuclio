@@ -4,14 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5"
-	"github.com/nuclio/logger"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/nuclio/logger"
+	"github.com/nuclio/nuclio/pkg/common/headers"
 )
 
 // TODO explain
@@ -399,10 +401,10 @@ func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
 		req, err1 := http.NewRequest(call.verb, NuclioURL(), strings.NewReader(call.body))
 		for header, values := range call.headers {
 			for _, value := range values {
-				if strings.ToLower(header) == "x-nuclio-async" {
+				if strings.ToLower(header) == strings.ToLower(headers.FunctionCallAsync) {
 					// make it synchronous
-					req.Header.Set("x-nuclio-async", "false")
-				} else if strings.ToLower(header) == "x-nuclio-async-deadline" {
+					req.Header.Set(headers.FunctionCallAsync, "false")
+				} else if strings.ToLower(header) == strings.ToLower(headers.AsyncCallDeadline) {
 					// don't send the deadline when calling function synchronously
 					continue
 				} else {
@@ -414,6 +416,7 @@ func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
 
 		// perform the request
 		h.Logger.Info("Executing asynchronous request %d now", call.id)
+		h.Logger.Debug("Request is %#v", req)
 		res, err2 := client.Do(req)
 		if err1 != nil || err2 != nil {
 			h.Logger.Error("Error while sending request to Nuclio")

@@ -19,11 +19,12 @@ package resource
 import (
 	"bytes"
 	"fmt"
-	"github.com/nuclio/nuclio/pkg/profaastinate"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/nuclio/nuclio/pkg/profaastinate"
 
 	"github.com/nuclio/nuclio/pkg/common"
 	"github.com/nuclio/nuclio/pkg/common/headers"
@@ -121,7 +122,7 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 
 	skipTLSVerification := strings.ToLower(request.Header.Get(headers.SkipTLSVerification)) == "true"
 
-	// TODO profaastinate
+	// profaastinate
 	// see if the x-nuclio-async is set to true: to the profaastinate stuff
 	// - immediately return a 204 status code
 	// - first step, put the complete function call (headers etc) into a db

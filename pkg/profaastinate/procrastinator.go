@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/nuclio/errors"
 	"github.com/nuclio/logger"
+	headers2 "github.com/nuclio/nuclio/pkg/common/headers"
 	"io"
 	"net/http"
 	"os"
@@ -66,7 +67,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	}
 
 	// set function deadline
-	deadlineStr := request.Header.Get("x-nuclio-async-deadline")
+	deadlineStr := request.Header.Get(headers2.AsyncCallDeadline)
 	deadlineInt, deadlineErr := strconv.Atoi(deadlineStr)
 	pro.Logger.Info("Function has deadline of %d ms", deadlineInt)
 	if deadlineErr != nil {
