@@ -1,6 +1,6 @@
 # Configuration file for deploying the OCR function using nuctl
 # To deploy the function using the UI, just copy the python code
-# from ocr.py and the build commands from this file
+# from function.py and the build commands from this file
 #
 # TODO test!
 
