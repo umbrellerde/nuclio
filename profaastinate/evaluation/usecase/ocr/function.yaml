@@ -20,7 +20,7 @@ spec:
   build:
     commands:
     - "apt-get update"
-    - "apt-get-install ocrmypdf -y"
+    - "apt-get install ocrmypdf -y"
     - "pip install pytesseract"
     - "pip install ocrmypdf"
     - "pip install minio"
