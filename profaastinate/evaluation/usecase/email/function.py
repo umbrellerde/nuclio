@@ -6,7 +6,9 @@ from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
-
+import os
+import json
+import time
 
 def getPDFString(fileIn):
     output_string = StringIO()
@@ -22,23 +24,35 @@ def getPDFString(fileIn):
 
 def email(context, event):
 
+    start_ts = time.time() * 1000
     minioURL = "host.docker.internal:9000"
     minioBucket = "profaastinate"
-    context.logger.debug("email function started")
+
+    context.logger.debug("email function start")
 
     # read header fields
-    filename = "testOCR.pdf" if event.headers.get("X-Read-Filename") is None else event.headers["X-Read-Filename"]
-    calltime = event.headers.get("Calltime") # TODO what happens if this header is missing?
-    deadline = event.headers.get("Deadline") # TODO what happens if this header is missing?
+    filename = "testOCR.pdf" if event.headers.get("X-Email-Filename") is None else event.headers["X-Email-Filename"]
+    deadline = 180000
     context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
 
     # read & print pdf from minio
     minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
     minioClient.fget_object(minioBucket, filename, f"/tmp/{filename}")
     pdfContent = getPDFString(f"/tmp/{filename}")
+    print(pdfContent)
 
-    context.logger.info(f"PDF content:\n{pdfContent}")
-    context.logger.debug("email function ended")
+    context.logger.debug("email function end")
+
+    end_ts = time.time() * 1000
+    eval_info = {
+        "function": "email",
+        "start": start_ts,
+        "end": end_ts,
+        "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
+        "request_deadline": event.headers["Profaastinate-Request-Deadline"],
+        "mode": event.headers["Profaastinate-Mode"]
+    }
+    context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # answer http request
     return context.Response(

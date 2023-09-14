@@ -7,6 +7,7 @@ import time
 import datetime
 import sys
 import base64
+import requests
 
 from minio import Minio
 from pdfminer.pdfparser import PDFParser
@@ -16,17 +17,23 @@ from pdfminer.pdfdocument import PDFDocument
 # context and event are passed by nuclio. context.logger is used to log to the nuclio console, event.body contains a base64 encoded string of the pdf file
 def virus(context, event):
 
+    start_ts = time.time() * 1000
+
+    # TODO change 'host.docker.internal' to 'localhost' on linux
+    context.logger.debug("virus function start")
+    nuclioURL = "http://host.docker.internal:8070/api/function_invocations"
+    minioURL = "host.docker.internal:9000"
+    minioBucket = "profaastinate"
+
     # get filename to read from request header
-    if 'X-Check-Filename' in event.headers:
-        filename = event.headers['X-Check-Filename']
-    else:
-        context.logger.warn("no filename to retrieve from minio, using 'test.pdf'")
-        filename = "test.pdf"
+    filename = "test.pdf" if event.headers.get("X-Virus-Filename") is None else event.headers["X-Virus-Filename"]
+    deadline = 180000
+    context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
 
     # download the file "file.pdf" from minio using default credentials
-    # TODO linux vs macos
-    client = Minio('host.docker.internal:9000', access_key="minioadmin", secret_key="minioadmin", secure=False)
-    client.fget_object("profaastinate", filename, f"/tmp/{filename}")
+    client = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
+    client.fget_object(minioBucket, filename, f"/tmp/{filename}")
+    context.logger.debug("stored PDF from minio locally")
 
     # read file using pdfparser
     parser = PDFParser(open(f"/tmp/{filename}", "rb"))
@@ -49,6 +56,26 @@ def virus(context, event):
     # the function is called with the file name in the body
     # TODO the function is called asynchronously, so we don't wait for a response
     #context.invoke("ocr", body="file.pdf") # TODO
+    response = requests.get(nuclioURL, headers={
+        "x-nuclio-function-name": "ocr",
+        "x-nuclio-funcition-namespace": "nuclio",
+        "x-nuclio-async": "true",
+        "x-nuclio-async-deadline": deadline,
+        "x-ocr-filename": filename # TODO check this is passend onto the next function
+    })
+    context.logger.debug(response)
+    context.logger.debug("virus function end")
+
+    end_ts = time.time() * 1000
+    eval_info = {
+        "function": "virus",
+        "start": start_ts,
+        "end": end_ts,
+        "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
+        "request_deadline": event.headers["Profaastinate-Request-Deadline"],
+        "mode": event.headers["Profaastinate-Mode"]
+    }
+    context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     return context.Response(
         status_code=200,

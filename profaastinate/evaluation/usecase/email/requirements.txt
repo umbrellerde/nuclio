@@ -1,2 +1,2 @@
-pdfminer
-minio
+pip install pdfminer
+pip install minio

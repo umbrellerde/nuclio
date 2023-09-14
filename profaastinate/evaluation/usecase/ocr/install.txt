@@ -1,0 +1,7 @@
+apt-get update
+apt-get install ocrmypdf -y
+pip install pytesseract
+pip install ocrmypdf
+pip install pdfminer
+pip install minio
+pip install requests

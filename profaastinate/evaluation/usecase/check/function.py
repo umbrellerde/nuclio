@@ -5,29 +5,59 @@ import time
 import datetime
 import sys
 import base64
+import requests
 from minio import Minio
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 
 def check(context, event):
 
-    context.logger.debug("starting function")
+    start_ts = time.time() * 1000
+    # TODO change 'host.docker.internal' to 'localhost' on linux
+    context.logger.debug("check function start")
+    nuclioURL = "http://host.docker.internal:8070/api/function_invocations"
+    minioURL = "host.docker.internal:9000"
+    minioBucket = "profaastinate"
 
     # get filename to read from request header
-    if 'X-Check-Filename' in event.headers:
-        filename = event.headers['X-Check-Filename']
-    else:
-        context.logger.warn("no filename to retrieve from minio, using 'test.pdf'")
-        filename = "test.pdf"
+    filename = "test.pdf" if event.headers.get("X-Check-Filename") is None else event.headers["X-Check-Filename"]
+    deadline = 180000 # TODO what happens if this header is missing?
+    context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
 
     # get file
-    # TODO change 'host.docker.internal' to 'localhost' on linux (?)
-    minioClient = Minio("host.docker.internal:9000", access_key="minioadmin", secret_key="minioadmin", secure=False)
-    file = minioClient.fget_object("profaastinate", filename, "/tmp/file.pdf")
+    minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
+    minioClient.fget_object(minioBucket, filename, f"/tmp/{filename}")
+    context.logger.debug("stored PDF from minio locally")
 
     # parse the PDF to access metadata
-    parser = PDFParser(open("/tmp/file.pdf", "rb"))
+    parser = PDFParser(open(f"/tmp/{filename}", "rb"))
     document = PDFDocument(parser)
+    context.logger.debug("parsed PDF")
+
+    # call next function => virus check
+    response = requests.get(nuclioURL, headers={
+        "x-nuclio-function-name": "virus",
+        "x-nuclio-funcition-namespace": "nuclio",
+        "x-nuclio-async": "true",
+        "x-nuclio-async-deadline": deadline,
+        "x-virus-filename": filename # TODO check this is passend onto the next function
+    })
+    context.logger.debug(response)
+    context.logger.debug("check function end")
+
+    # "profaastinate-request-timestamp", strconv.FormatInt(call.timestamp.UnixMilli(), 10))
+      #		req.Header.Set("profaastinate-request-deadline"
+
+    end_ts = time.time() * 1000
+    eval_info = {
+        "function": "check",
+        "start": start_ts,
+        "end": end_ts,
+        "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
+        "request_deadline": event.headers["Profaastinate-Request-Deadline"],
+        "mode": event.headers["Profaastinate-Mode"]
+    }
+    context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # return parsed metadata
     return context.Response(

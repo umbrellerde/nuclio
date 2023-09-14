@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nuclio/errors"
 	"github.com/nuclio/logger"
 	headers2 "github.com/nuclio/nuclio/pkg/common/headers"
@@ -16,17 +16,17 @@ import (
 )
 
 type Procrastinator struct {
-	conn   *pgx.Conn
+	conn   *pgxpool.Pool
 	Logger logger.Logger
 }
 
-func ensureTablesExist(conn *pgx.Conn) error {
+func ensureTablesExist(conn *pgxpool.Pool) error {
 	_, err := conn.Exec(context.Background(), `
 			CREATE TABLE IF NOT EXISTS delayed_calls(
 		    	id SERIAL PRIMARY KEY,
 				function_name VARCHAR ( 50 ) NOT NULL,
-				call_time TIMESTAMP NOT NULL,
-			    deadline TIMESTAMP NOT NULL,
+				call_time TIMESTAMPTZ NOT NULL,
+			    deadline TIMESTAMPTZ NOT NULL,
 				HTTP_verb TEXT NOT NULL,
 				headers TEXT NOT NULL,
 				body TEXT NOT NULL
@@ -37,7 +37,7 @@ func ensureTablesExist(conn *pgx.Conn) error {
 
 func NewProcrastinator() *Procrastinator {
 	// create DB connection
-	conn, err := pgx.Connect(context.Background(), connString)
+	conn, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
@@ -89,7 +89,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	}
 
 	// insert values into DB
-	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp, deadline, httpVerb, string(headers), string(body))
+	res, err := pro.conn.Exec(context.Background(), insertDelayedCall, name, timestamp.Format(time.RFC3339Nano), deadline.Format(time.RFC3339Nano), httpVerb, string(headers), string(body))
 	pro.Logger.Info("Response from database: %s", res.String())
 	if err != nil {
 		pro.Logger.Debug(err.Error())

@@ -16,7 +16,7 @@ import (
 	"github.com/nuclio/nuclio/pkg/common/headers"
 )
 
-// TODO explain
+//
 //
 //
 
@@ -82,7 +82,6 @@ func NewHustler(megavisor *Megavisor) *Hustler {
 		_, _ = fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-	err = ensureTablesExist(conn)
 
 	return &Hustler{
 		conn,
@@ -96,12 +95,17 @@ func (h *Hustler) Start() {
 	h.Logger.Debug("Hustler started")
 
 	// params for swamped supervisor
-	nWorkers, urgencyMs, frequencyMs := 2, 10_000, 10_000
+	nWorkers, urgencyMs, frequencyMs := 5, 12_000, 10_000
 	// params for bored supervisor
-	batchSize := 10
+	batchSize := 100
 	workersForFunctions := map[string]int{
-		"helloworld1": 2,
-		"helloworld2": 2,
+		"helloworld":  3,
+		"helloworld1": 3,
+		"helloworld2": 3,
+		"check":       5,
+		"ocr":         2,
+		"virus":       5,
+		"email":       5,
 	}
 
 	// begin by starting swamped supervisor
@@ -113,7 +117,7 @@ func (h *Hustler) Start() {
 
 	for x := range h.Megavisor.modeChannel {
 
-		// TODO wait until they're completely stopped before starting the new one?
+		// wait until they're completely stopped before starting the new one
 		// it could be the case that transactions overlap (as both supervisors use the same DB connection)
 		// which, in turn, would result in 'connection busy'
 
@@ -158,7 +162,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 	for i := 0; i < nWorkers; i++ {
 		workerId := "swampedWorker" + strconv.Itoa(i)
 		h.Logger.Debug("starting worker %s", workerId)
-		go h.worker(tasks, workerId)
+		go h.worker(tasks, workerId, "swamped")
 	}
 
 	// every 'freqencyMs' seconds, look for new urgent calls and send them to the workers
@@ -300,10 +304,10 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 					nWorkers = workersForFunctions[functionName]
 				} else {
 					// TODO default number of workers?
-					nWorkers = 1
+					nWorkers = 3
 				}
 				for i := 0; i < nWorkers; i++ {
-					go h.worker(callsForFunctions[functionName], fmt.Sprintf("Worker(%s, %d)", functionName, i))
+					go h.worker(callsForFunctions[functionName], fmt.Sprintf("Worker(%s, %d)", functionName, i), "bored")
 				}
 			}
 
@@ -336,60 +340,8 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 	*supervisorDone <- true
 }
 
-/*// The boredSupervisor gets 'batchSize' calls for a specific function at a time and performs them
-func (h *Hustler) boredSupervisor(functionName string, batchSize int, nWorkers int, stopIt *bool) {
-
-	ctx := context.Background()
-
-	// create workers
-	calls := make(chan FunctionCall)
-	for i := 0; i < nWorkers; i++ {
-		go h.worker(calls, functionName+strconv.Itoa(i))
-	}
-
-	for !*stopIt {
-
-		// get calls for functionName
-		tx, _ := h.conn.Begin(ctx)
-		rows, err := tx.Query(ctx, `SELECT * FROM delayed_calls WHERE function_name = $1 ORDER BY deadline ASC LIMIT $2`, functionName, batchSize)
-		if err != nil {
-			h.Logger.Error("query failed!", err.Error())
-		}
-
-		// iterate over all calls
-		var ids []int
-		for rows.Next() {
-			// forward call to workers
-			h.Logger.Debug("supervisor: getting new call to send to workers....")
-			call := NewFunctionCallFromDB(&rows, h.Logger)
-			calls <- *call
-			h.Logger.Debug("supervisor: forwarded call to worker node: %s", call.String())
-
-			// store IDs for later deletion
-			ids = append(ids, call.id)
-		}
-
-		// delete call from DB
-		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
-		if err != nil {
-			h.Logger.Warn("bored supervisor encountered error while trying to delete calls from DB: %s", err.Error())
-		}
-
-		// once all executed calls are deleted from the DB, commit the transaction
-		//h.Logger.Debug("supervisor: all calls are deleted!")
-		err = tx.Commit(ctx)
-		if err != nil {
-			h.Logger.Error("error during commit of transaction in supervisor", err.Error())
-			return
-		}
-	}
-	h.Logger.Debug("supervisor: closing calls channel to stop all workers...")
-	// tell the workers to go home
-	close(calls)
-}*/
-
 // A worker receives tasks through a channel and executes functions calls until the channel is closed
-func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
+func (h *Hustler) worker(calls <-chan FunctionCall, workerId, mode string) {
 
 	h.Logger.Debug("worker %s started", workerId)
 
@@ -404,15 +356,16 @@ func (h *Hustler) worker(calls <-chan FunctionCall, workerId string) {
 				if strings.ToLower(header) == strings.ToLower(headers.FunctionCallAsync) {
 					// make it synchronous
 					req.Header.Set(headers.FunctionCallAsync, "false")
-				} else if strings.ToLower(header) == strings.ToLower(headers.AsyncCallDeadline) {
-					// don't send the deadline when calling function synchronously
-					continue
 				} else {
 					req.Header.Set(header, value)
 				}
 			}
 		}
 		req.Header.Set("executed-by-hustler", "true")
+		req.Header.Set("profaastinate-mode", mode)
+		// For our convenience in evaluation
+		req.Header.Set("profaastinate-request-timestamp", strconv.FormatInt(call.timestamp.UnixMilli(), 10))
+		req.Header.Set("profaastinate-request-deadline", strconv.FormatInt(call.deadline.UnixMilli(), 10))
 
 		// perform the request
 		h.Logger.Info("Executing asynchronous request %d now", call.id)

@@ -1,7 +1,6 @@
 package profaastinate
 
 import (
-	"fmt"
 	"github.com/nuclio/logger"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"runtime"
@@ -72,7 +71,7 @@ func (m *Megavisor) Start() {
 
 	// check if Mac users want special treatment
 	if runtime.GOOS == "darwin" {
-		fmt.Printf("You are not using Linux, so the Docker VM probably doesn't have access to all CPU cores. Please update numCpuFactor accordingly")
+		m.Logger.Error("You are not using Linux, so the Docker VM probably doesn't have access to all CPU cores. Please update numCpuFactor accordingly")
 		numCpuFactor = 2
 	}
 
@@ -84,10 +83,9 @@ func (m *Megavisor) Start() {
 
 		// get & print avg
 		avg := m.avg()
-		m.Logger.Debug("average cpu usage over last %d ms was %.2f., current is %.2f", m.modeSwitchFrequency, avg, usageAdj)
+		//m.Logger.Debug("average cpu usage over last %d ms was %.2f., current is %.2f", m.modeSwitchFrequency, avg, usageAdj)
 
 		// determine whether to switch modes
-		// TODO turn 80 & 90 into parameters
 		if avg >= float64(m.swampedBoundary) && m.mode != Swamped {
 			m.Logger.Info("It's my time to shine! (swamped mode activated)")
 			m.mode = Swamped

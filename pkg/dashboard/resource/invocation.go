@@ -139,7 +139,6 @@ func (tr *invocationResource) handleRequest(responseWriter http.ResponseWriter, 
 
 			// start the megavisor to monitor cpu usage and switch between bored and swamped modes
 			go tr.megavisor.Start()
-
 			go tr.hustler.Start()
 			firstRequestExecuted = true
 		}
