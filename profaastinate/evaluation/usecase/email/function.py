@@ -29,6 +29,7 @@ def email(context, event):
     minioBucket = "profaastinate"
 
     context.logger.debug("email function start")
+    context.logger.debug(event.body)
 
     # read header fields
     filename = "testOCR.pdf" if event.headers.get("X-Email-Filename") is None else event.headers["X-Email-Filename"]

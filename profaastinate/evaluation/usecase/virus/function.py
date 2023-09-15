@@ -21,14 +21,15 @@ def virus(context, event):
 
     # TODO change 'host.docker.internal' to 'localhost' on linux
     context.logger.debug("virus function start")
+    context.logger.debug(event.headers)
     nuclioURL = "http://host.docker.internal:8070/api/function_invocations"
     minioURL = "host.docker.internal:9000"
     minioBucket = "profaastinate"
 
     # get filename to read from request header
     filename = "test.pdf" if event.headers.get("X-Virus-Filename") is None else event.headers["X-Virus-Filename"]
-    deadline = 180000
-    context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
+    deadline = "180000"
+    context.logger.debug(f"filename={filename}")
 
     # download the file "file.pdf" from minio using default credentials
     client = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
@@ -56,13 +57,17 @@ def virus(context, event):
     # the function is called with the file name in the body
     # TODO the function is called asynchronously, so we don't wait for a response
     #context.invoke("ocr", body="file.pdf") # TODO
-    response = requests.get(nuclioURL, headers={
-        "x-nuclio-function-name": "ocr",
-        "x-nuclio-funcition-namespace": "nuclio",
-        "x-nuclio-async": "true",
-        "x-nuclio-async-deadline": deadline,
-        "x-ocr-filename": filename # TODO check this is passend onto the next function
-    })
+    response = requests.get(
+        nuclioURL,
+        headers={
+            "x-nuclio-function-name": "ocr",
+            "x-nuclio-funcition-namespace": "nuclio",
+            "x-nuclio-async": "true",
+            "x-nuclio-async-deadline": deadline,
+            "x-ocr-filename": filename,
+            "callid": event.headers["Callid"]
+        }
+    )
     context.logger.debug(response)
     context.logger.debug("virus function end")
 
@@ -73,7 +78,8 @@ def virus(context, event):
         "end": end_ts,
         "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
         "request_deadline": event.headers["Profaastinate-Request-Deadline"],
-        "mode": event.headers["Profaastinate-Mode"]
+        "mode": event.headers["Profaastinate-Mode"],
+        "callid": event.headers["Callid"]
     }
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 

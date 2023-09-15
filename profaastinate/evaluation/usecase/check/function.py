@@ -6,6 +6,7 @@ import datetime
 import sys
 import base64
 import requests
+import uuid
 from minio import Minio
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -21,8 +22,8 @@ def check(context, event):
 
     # get filename to read from request header
     filename = "test.pdf" if event.headers.get("X-Check-Filename") is None else event.headers["X-Check-Filename"]
-    deadline = 180000 # TODO what happens if this header is missing?
-    context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
+    deadline = "180000"
+    context.logger.debug(f"filename={filename}")
 
     # get file
     minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
@@ -35,18 +36,23 @@ def check(context, event):
     context.logger.debug("parsed PDF")
 
     # call next function => virus check
-    response = requests.get(nuclioURL, headers={
-        "x-nuclio-function-name": "virus",
-        "x-nuclio-funcition-namespace": "nuclio",
-        "x-nuclio-async": "true",
-        "x-nuclio-async-deadline": deadline,
-        "x-virus-filename": filename # TODO check this is passend onto the next function
-    })
+    callid = uuid.uuid4().hex
+    response = requests.get(
+        nuclioURL,
+        headers={
+            "x-nuclio-function-name": "virus",
+            "x-nuclio-funcition-namespace": "nuclio",
+            "x-nuclio-async": "true",
+            "x-nuclio-async-deadline": deadline,
+            "x-virus-filename": filename,
+            "callid": callid
+        }
+    )
     context.logger.debug(response)
     context.logger.debug("check function end")
 
     # "profaastinate-request-timestamp", strconv.FormatInt(call.timestamp.UnixMilli(), 10))
-      #		req.Header.Set("profaastinate-request-deadline"
+    #		req.Header.Set("profaastinate-request-deadline"
 
     end_ts = time.time() * 1000
     eval_info = {
@@ -55,14 +61,15 @@ def check(context, event):
         "end": end_ts,
         "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
         "request_deadline": event.headers["Profaastinate-Request-Deadline"],
-        "mode": event.headers["Profaastinate-Mode"]
+        "mode": event.headers["Profaastinate-Mode"],
+        "callid": callid
     }
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # return parsed metadata
     return context.Response(
-        body=str(document.info), 
-        headers={}, 
-        content_type='text/plain', 
+        body=str(document.info),
+        headers={},
+        content_type='text/plain',
         status_code=200
-        )
+    )
