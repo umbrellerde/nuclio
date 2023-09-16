@@ -28,11 +28,24 @@ make dashboard
 **Step 2:** Run your local Nuclio version.
 
 ```shell
-if [[ $(uname -m) -eq "arm64" ]]; then
-  ARCH="arm64"
+if [[ $(uname) == "Darwin" ]]; then
+    # Check the CPU architecture on macOS
+    if [[ $(uname -m) == "arm64" ]]; then
+        ARCH="arm64"
+    else
+        ARCH="unknown"
+        echo "Error: Unknown CPU architecture on macOS"
+    fi
+elif [[ $(uname) == "Linux" ]]; then
+    # Set ARCH to "amd64" for Linux
+    ARCH="amd64"
 else
-  ARCH="amd64"
+    # Unknown OS
+    ARCH="unknown"
+    echo "Error: Unknown operating system"
 fi
+
+
 
 COMMAND="docker run \
     --rm -p 8070:8070 \
