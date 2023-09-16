@@ -39,7 +39,9 @@ COMMAND="docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name nuclio-dashboard \
     -e NUCLIO_DASHBOARD_NO_PULL_BASE_IMAGES='true' \
+    -e NUCLIO_DASHBOARD_EXTERNAL_IP_ADDRESSES="host.docker.internal" \
     --network profaastinate \
+    --add-host host.docker.internal:host-gateway \
     quay.io/nuclio/dashboard:latest-$ARCH"
 
 eval "$COMMAND"
@@ -66,7 +68,7 @@ eval "$COMMAND"
 **Useful commands:**
 ```shell
 # call a function using curl
-curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: test1" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true"
+curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: check" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true" -H "x-nuclio-async-deadline: 30000"
 
 # get replicas
 curl "localhost:8070/api/functions/test1/replicas" -H "x-nuclio-function-namespace: nuclio"
