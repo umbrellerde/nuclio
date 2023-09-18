@@ -20,6 +20,20 @@ def check(context, event):
     minioURL = "host.docker.internal:9000"
     minioBucket = "profaastinate"
 
+    # set missing headers (e.g., in case function was called synchronously)
+    expected_headers = {
+        "Callid": uuid.uuid4().hex,
+        "X-Check-Filename": "fusionize.pdf",
+        "X-Virus-Filename": "fusionize.pdf",
+        "X-OCR-Filename": "fusionize.pdf",
+        "X-Email-Filename": "fusionizeOCR.pdf",
+        "Forceocr": True,
+    }
+    for header in expected_headers:
+        if event.headers.get(header) is None:
+            context.logger.debug(f"set missing header {header} to {expected_headers[header]}")
+            event.headers[header] = expected_headers[header]
+
     # get filename to read from request header
     filename = "test.pdf" if event.headers.get("X-Check-Filename") is None else event.headers["X-Check-Filename"]
     deadline = "180000"
@@ -36,12 +50,12 @@ def check(context, event):
     context.logger.debug("parsed PDF")
 
     # call next function => virus check
-    callid = uuid.uuid4().hex
+    callid = event.headers["Callid"]
     response = requests.get(
         nuclioURL,
         headers={
             "x-nuclio-function-name": "virus",
-            "x-nuclio-funcition-namespace": "nuclio",
+            "x-nuclio-function-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
             "x-virus-filename": filename,
@@ -54,17 +68,22 @@ def check(context, event):
     # "profaastinate-request-timestamp", strconv.FormatInt(call.timestamp.UnixMilli(), 10))
     #		req.Header.Set("profaastinate-request-deadline"
 
-
     end_ts = time.time() * 1000
     eval_info = {
         "function": "check",
         "start": start_ts,
         "end": end_ts,
-        "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
-        "request_deadline": event.headers["Profaastinate-Request-Deadline"],
-        "mode": event.headers["Profaastinate-Mode"],
         "callid": callid
     }
+    if event.headers.get("Profaastinate-Request-Timestamp"):
+        eval_info["request_timestamp"] = event.headers["Profaastinate-Request-Timestamp"]
+    if event.headers.get("Profaastinate-Request-Deadline"):
+        eval_info["request_deadline"] = event.headers["Profaastinate-Request-Deadline"]
+    if event.headers.get("Profaastinate-Mode"):
+        eval_info["mode"] = event.headers["Profaastinate-Mode"]
+    else:
+        eval_info["mode"] = "sync"
+
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # return parsed metadata
