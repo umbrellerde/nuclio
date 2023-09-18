@@ -46,7 +46,11 @@ def ocr(context, event):
     # TODO change 'host.docker.internal' to 'localhost' on linux
     pathIn, pathOut = f"/tmp/{filename}", f"/tmp/OCR_{filename}"
     minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
-    minioClient.fget_object(minioBucket, filename, pathIn)
+
+    # only get the file from minio if it is not already in the local filesystem
+    if not os.path.exists(pathIn):
+        context.logger.debug("file not in local filesystem, getting from minio")
+        minioClient.fget_object(minioBucket, filename, pathIn)
     context.logger.debug("stored PDF from minio locally")
 
     # do ocr
