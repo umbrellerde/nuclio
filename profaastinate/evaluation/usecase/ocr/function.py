@@ -73,7 +73,7 @@ def ocr(context, event):
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
             "x-email-filename": f"OCR_{filename}",
-            "callid": event.header["Callid"]
+            "callid": event.headers["Callid"]
         }
     )
     context.logger.debug(response)
