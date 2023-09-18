@@ -28,10 +28,11 @@ resource "google_compute_subnetwork" "default" {
 }
 
 resource "google_compute_instance" "default" {
-  machine_type = "e2-standard-8" # "e2-standard-2" # e2-highcpu-16 # c3-standard-8 # e2-stan-8 is 28ct/h
+  machine_type = "e2-highmem-8" # "e2-standard-2" # e2-highcpu-16 # c3-standard-8 # e2-stan-8 is 28ct/h
   name         = "default-vm"
   zone = "europe-west4-a"
   tags = ["ssh"]
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {

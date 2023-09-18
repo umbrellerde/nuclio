@@ -76,7 +76,7 @@ def ocr(context, event):
             "x-nuclio-funcition-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
-            "x-email-filename": f"OCR_{filename}",
+            "x-email-filename": f"fusionizeOCR.pdf",
             "callid": event.headers["Callid"]
         }
     )
