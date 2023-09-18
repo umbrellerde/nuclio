@@ -627,6 +627,7 @@ func (p *Platform) GetExternalIPAddresses() ([]string, error) {
 
 	// if the parent has something, use that
 	if len(externalIPAddress) != 0 {
+		p.Logger.Info("DOCKER NETWORKING! Using the Platform-Given External IP Address of ", externalIPAddress)
 		return externalIPAddress, nil
 	}
 
@@ -638,10 +639,12 @@ func (p *Platform) GetExternalIPAddresses() ([]string, error) {
 	}
 
 	if common.RunningInContainer() {
+		p.Logger.Info("DOCKER NETWORKING! Running in Container ", externalIPAddress)
 		return []string{"172.17.0.1"}, nil
 	}
 
 	// return an empty string to maintain backwards compatibility
+	p.Logger.Info("DOCKER NETWORKING! Empty String ", externalIPAddress)
 	return []string{""}, nil
 }
 
@@ -1279,6 +1282,8 @@ func (p *Platform) enrichAndValidateFunctionConfig(ctx context.Context, function
 func (p *Platform) populateFunctionInvocationStatus(functionInvocation *functionconfig.Status,
 	createFunctionResults *platform.CreateFunctionResult) error {
 
+	p.Logger.Debug("DOCKER NETWORKING! I am in populateFunctionInvocationStatus")
+
 	externalIPAddresses, err := p.GetExternalIPAddresses()
 	if err != nil {
 		return errors.Wrap(err, "Failed to get external IP addresses")
@@ -1288,7 +1293,7 @@ func (p *Platform) populateFunctionInvocationStatus(functionInvocation *function
 	if err != nil {
 		return errors.Wrap(err, "Failed to get container network addresses")
 	}
-
+	p.Logger.Debug("DOCKER NETWORKING! populateFunctionInvocationStatus variables", "externalIpAddresses", externalIPAddresses, "addresses", addresses)
 	// enrich address with function's container port
 	var addressesWithFunctionPort []string
 	for _, address := range addresses {
@@ -1310,11 +1315,15 @@ func (p *Platform) populateFunctionInvocationStatus(functionInvocation *function
 		}
 	}
 
+	p.Logger.Debug("DOCKER NETWORKING! Before setting default", "functionInvocation", functionInvocation)
+
 	// when deploying and no external ip address was give, default to "unknown" destination 0.0.0.0
 	if createFunctionResults.Port != 0 && len(functionInvocation.ExternalInvocationURLs) == 0 {
 		functionInvocation.ExternalInvocationURLs = append(
 			functionInvocation.ExternalInvocationURLs,
-			fmt.Sprintf("0.0.0.0:%d", createFunctionResults.Port),
+			// Profaastinate: Maybe use host.docker.internal instead of 0.0.0.0 as we are using docker networks? Did not work as variable is not set here for our functions?
+			fmt.Sprintf("host.docker.internal:%d", createFunctionResults.Port),
+			//fmt.Sprintf("0.0.0.0:%d", createFunctionResults.Port),
 		)
 	}
 

@@ -28,18 +28,33 @@ make dashboard
 **Step 2:** Run your local Nuclio version.
 
 ```shell
-if [[ $(uname -m) -eq "arm64" ]]; then
-  ARCH="arm64"
+if [[ $(uname) == "Darwin" ]]; then
+    # Check the CPU architecture on macOS
+    if [[ $(uname -m) == "arm64" ]]; then
+        ARCH="arm64"
+    else
+        ARCH="unknown"
+        echo "Error: Unknown CPU architecture on macOS"
+    fi
+elif [[ $(uname) == "Linux" ]]; then
+    # Set ARCH to "amd64" for Linux
+    ARCH="amd64"
 else
-  ARCH="amd64"
+    # Unknown OS
+    ARCH="unknown"
+    echo "Error: Unknown operating system"
 fi
+
+
 
 COMMAND="docker run \
     --rm -p 8070:8070 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name nuclio-dashboard \
     -e NUCLIO_DASHBOARD_NO_PULL_BASE_IMAGES='true' \
+    -e NUCLIO_DASHBOARD_EXTERNAL_IP_ADDRESSES="host.docker.internal" \
     --network profaastinate \
+    --add-host host.docker.internal:host-gateway \
     quay.io/nuclio/dashboard:latest-$ARCH"
 
 eval "$COMMAND"
@@ -66,7 +81,7 @@ eval "$COMMAND"
 **Useful commands:**
 ```shell
 # call a function using curl
-curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: test1" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true"
+curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: check" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true" -H "x-nuclio-async-deadline: 30000"
 
 # get replicas
 curl "localhost:8070/api/functions/test1/replicas" -H "x-nuclio-function-namespace: nuclio"
