@@ -9,6 +9,7 @@ from pdfminer.pdfparser import PDFParser
 import os
 import json
 import time
+import uuid
 
 def getPDFString(fileIn):
     output_string = StringIO()
@@ -31,10 +32,26 @@ def email(context, event):
     context.logger.debug("email function start")
     context.logger.debug(event.body)
 
+
+    # set missing headers (e.g., in case function was called synchronously)
+    expected_headers = {
+        "Callid": uuid.uuid4().hex,
+        "X-Check-Filename": "fusionize.pdf",
+        "X-Virus-Filename": "fusionize.pdf",
+        "X-Ocr-Filename": "fusionize.pdf",
+        "X-Email-Filename": "fusionizeOCR.pdf",
+        "Forceocr": True,
+    }
+    for header in expected_headers:
+        if event.headers.get(header) is None:
+            context.logger.debug(f"set missing header {header} to {expected_headers[header]}")
+            event.headers[header] = expected_headers[header]
+
+
     # read header fields
     filename = "testOCR.pdf" if event.headers.get("X-Email-Filename") is None else event.headers["X-Email-Filename"]
     deadline = 180000
-    context.logger.debug(f"filename={filename}, calltime={calltime}, deadline={deadline}")
+    context.logger.debug(f"filename={filename}")
 
     # read & print pdf from minio
     minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
@@ -46,13 +63,19 @@ def email(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "email",
+        "function": "check",
         "start": start_ts,
         "end": end_ts,
-        "request_timestamp": event.headers["Profaastinate-Request-Timestamp"],
-        "request_deadline": event.headers["Profaastinate-Request-Deadline"],
-        "mode": event.headers["Profaastinate-Mode"]
+        "callid": event.header["Callid"]
     }
+    if event.headers.get("Profaastinate-Request-Timestamp"):
+        eval_info["request_timestamp"] = event.headers["Profaastinate-Request-Timestamp"]
+    if event.headers.get("Profaastinate-Request-Deadline"):
+        eval_info["request_deadline"] = event.headers["Profaastinate-Request-Deadline"]
+    if event.headers.get("Profaastinate-Mode"):
+        eval_info["mode"] = event.headers["Profaastinate-Mode"]
+    else:
+        eval_info["mode"] = "sync"
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # answer http request
