@@ -28,7 +28,7 @@ resource "google_compute_subnetwork" "default" {
 }
 
 resource "google_compute_instance" "default" {
-  machine_type = "e2-standard-8" # "e2-standard-2" # e2-highcpu-16 # c3-standard-8
+  machine_type = "e2-standard-8" # "e2-standard-2" # e2-highcpu-16 # c3-standard-8 # e2-stan-8 is 28ct/h
   name         = "default-vm"
   zone = "europe-west4-a"
   tags = ["ssh"]
@@ -40,7 +40,7 @@ resource "google_compute_instance" "default" {
     }
   }
 
-  // metadata_startup_script = "sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y htop git ca-certificates curl gnupg make golang-go && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker $USER && git clone https://github.com/umbrellerde/nuclio && cd nuclio && git switch 1.11.x && cd .. && touch done.txt"
+  // metadata_startup_script = "sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y sysstat htop git ca-certificates curl gnupg make golang-go && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker $USER && git clone https://github.com/umbrellerde/nuclio && cd nuclio && git switch 1.11.x && cd .. && touch done.txt"
 
   //metadata_startup_script = file("../deployment_scripts/installDeps.sh")
 

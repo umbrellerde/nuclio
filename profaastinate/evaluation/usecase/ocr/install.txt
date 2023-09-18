@@ -5,3 +5,5 @@ pip install ocrmypdf
 pip install pdfminer
 pip install minio
 pip install requests
+
+# numWorkers = 100

@@ -102,10 +102,10 @@ func (h *Hustler) Start() {
 		"helloworld":  3,
 		"helloworld1": 3,
 		"helloworld2": 3,
-		"check":       5,
-		"ocr":         2,
-		"virus":       5,
-		"email":       5,
+		"check":       10, // TODO this needs to be waaay bigger, relative to the load we put it under
+		"ocr":         10,
+		"virus":       10,
+		"email":       10,
 	}
 
 	// begin by starting swamped supervisor

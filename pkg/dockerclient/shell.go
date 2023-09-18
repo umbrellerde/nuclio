@@ -211,6 +211,10 @@ func (c *ShellClient) RunContainer(imageName string, runOptions *RunOptions) (st
 
 	var dockerArguments []string
 
+	// Profaastinate: Allow containers to contact the localhost of the main machine
+	// Is this a security nightmare? Yes, absoluteley! But seriously, how are functions supposed to call other functions / use minio otherwise?
+	dockerArguments = append(dockerArguments, "--add-host host.docker.internal:host-gateway")
+
 	for localPort, dockerPort := range runOptions.Ports {
 		if localPort == RunOptionsNoPort {
 			dockerArguments = append(dockerArguments, fmt.Sprintf("--publish '%d'", dockerPort))

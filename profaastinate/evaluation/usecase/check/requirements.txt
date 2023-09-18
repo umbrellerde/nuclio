@@ -3,3 +3,4 @@ pip install pdfminer
 pip install requests
 
 # numWorkers = 100
+# handler is main:check
