@@ -81,7 +81,7 @@ def ocr(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "check",
+        "function": "ocr",
         "start": start_ts,
         "end": end_ts,
         "callid": callid

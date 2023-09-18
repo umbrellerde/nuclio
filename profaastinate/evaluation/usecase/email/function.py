@@ -63,10 +63,10 @@ def email(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "check",
+        "function": "email",
         "start": start_ts,
         "end": end_ts,
-        "callid": event.header["Callid"]
+        "callid": event.headers["Callid"]
     }
     if event.headers.get("Profaastinate-Request-Timestamp"):
         eval_info["request_timestamp"] = event.headers["Profaastinate-Request-Timestamp"]

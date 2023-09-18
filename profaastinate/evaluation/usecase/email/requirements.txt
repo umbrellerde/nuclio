@@ -1,4 +1,3 @@
-pip install pdfminer
-pip install minio
+pip install pdfminer minio
 
 # numWorkers = 100
