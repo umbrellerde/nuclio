@@ -76,7 +76,7 @@ def virus(context, event):
     response = requests.get(
         nuclioURL,
         headers={
-            "x-nuclio-function-name": "ocr",
+            "x-nuclio-function-name": "urgentocr",
             "x-nuclio-funcition-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
@@ -89,7 +89,7 @@ def virus(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "virus",
+        "function": "urgentvirus",
         "start": start_ts,
         "end": end_ts,
         "callid": callid

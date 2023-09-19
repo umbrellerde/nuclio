@@ -32,7 +32,6 @@ def email(context, event):
     context.logger.debug("email function start")
     context.logger.debug(event.body)
 
-
     # set missing headers (e.g., in case function was called synchronously)
     expected_headers = {
         "Callid": uuid.uuid4().hex,
@@ -46,7 +45,6 @@ def email(context, event):
         if event.headers.get(header) is None:
             context.logger.debug(f"set missing header {header} to {expected_headers[header]}")
             event.headers[header] = expected_headers[header]
-
 
     # read header fields
     filename = "testOCR.pdf" if event.headers.get("X-Email-Filename") is None else event.headers["X-Email-Filename"]
@@ -62,7 +60,7 @@ def email(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "email",
+        "function": "urgentemail",
         "start": start_ts,
         "end": end_ts,
         "callid": event.headers["Callid"]

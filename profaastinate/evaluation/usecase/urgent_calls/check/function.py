@@ -54,7 +54,7 @@ def check(context, event):
     response = requests.get(
         nuclioURL,
         headers={
-            "x-nuclio-function-name": "virus",
+            "x-nuclio-function-name": "urgentvirus",
             "x-nuclio-function-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
@@ -70,7 +70,7 @@ def check(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "check",
+        "function": "urgentcheck",
         "start": start_ts,
         "end": end_ts,
         "callid": callid

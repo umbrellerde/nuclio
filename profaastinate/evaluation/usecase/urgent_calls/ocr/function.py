@@ -78,7 +78,7 @@ def ocr(context, event):
     response = requests.get(
         nuclioURL,
         headers={
-            "x-nuclio-function-name": "email",
+            "x-nuclio-function-name": "urgentemail",
             "x-nuclio-funcition-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
@@ -91,7 +91,7 @@ def ocr(context, event):
 
     end_ts = time.time() * 1000
     eval_info = {
-        "function": "ocr",
+        "function": "urgentocr",
         "start": start_ts,
         "end": end_ts,
         "callid": callid
