@@ -11,6 +11,8 @@ import platform
 # commands can be multiple parameters in one string that are split by spaces
 # returns the container id
 def run_container(image, commands):
+    # Delete the container if it already exists
+    subprocess.run(["docker", "rm" "load_generator"], stdout=subprocess.PIPE)
     # run the container
     # generate arguments list by splitting commands up into a list
     container = subprocess.run(["docker", "run", "--name", "load_generator", "-d", image] + commands.split(" "), stdout=subprocess.PIPE)
@@ -42,7 +44,7 @@ def stop_container(container_id):
 
 # function that gets three parameters: the experiment start, the end, and the current time.
 # depending on this, it wil output the cpu share that should be avaliable.
-# the cpu share should be 95% during the first third of the experiment, 15% during the last third, and follow an s-curve in between
+# the cpu share should be high% during the first third of the experiment, low% during the last third, and scale linearly in between
 def get_cpu_share(start, end, current):
     # get the length of the experiment
     length = end - start
@@ -59,8 +61,8 @@ def get_cpu_share(start, end, current):
         return "0.15"
     # if the current time is in the middle third of the experiment
     else:
-        # calculate the s-curve
-        return str(0.95 - 0.8 * (current - length/3) ** 2 / (length/3) ** 2)
+        # calculate the cpu share based on the current time
+        return str(round(0.95 - (current - length/3) / (length/3) * 0.8, 2))
 
 if __name__ == "__main__":
 

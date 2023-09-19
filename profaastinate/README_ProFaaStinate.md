@@ -81,7 +81,7 @@ eval "$COMMAND"
 **Useful commands:**
 ```shell
 # call a function using curl
-curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: check" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true" -H "x-nuclio-async-deadline: 30000"
+curl "localhost:8070/api/function_invocations" -H "x-nuclio-function-name: check" -H "x-nuclio-function-namespace: nuclio" -H "x-nuclio-async: true" -H "x-nuclio-async-deadline: 0"
 
 # get replicas
 curl "localhost:8070/api/functions/test1/replicas" -H "x-nuclio-function-namespace: nuclio"

@@ -44,7 +44,7 @@ def ocr(context, event):
     context.logger.debug(f"filename={filename}")
 
     # TODO change 'host.docker.internal' to 'localhost' on linux
-    pathIn, pathOut = f"/tmp/{filename}", f"/tmp/OCR_{filename}"
+    pathIn, pathOut = f"/tmp/{filename}", f"/tmp/{callid}_OCR_{filename}"
     minioClient = Minio(minioURL, access_key="minioadmin", secret_key="minioadmin", secure=False)
 
     # only get the file from minio if it is not already in the local filesystem
@@ -59,9 +59,13 @@ def ocr(context, event):
         forceOCR = False
         if "Forceocr" in event.headers:
             forceOCR = bool(event.headers["Forceocr"])
-        ocrmypdf.ocr(pathIn, pathOut, force_ocr=forceOCR)
+        # tesseract_timeout is in seconds, default is 180. We use 15 to make sure the cpu cores are not blocked the whole experiment
+        ocrmypdf.ocr(pathIn, pathOut, force_ocr=forceOCR,tesseract_timeout=15, optimize=0, progess_bar=False)
         responseMsg = f"OCR successful! Stored output in '{pathOut}'"
-    except ocrmypdf.PriorOcrFoundError as e:
+        # delete the pathOut file
+        os.remove(pathOut)
+    except Exception as e:
+        context.logger.error(f"OCR failed: {str(e)}")
         responseMsg = f"{str(e)}"
 
     # put OCR'd file into minio
@@ -76,7 +80,7 @@ def ocr(context, event):
             "x-nuclio-funcition-namespace": "nuclio",
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
-            "x-email-filename": f"fusionizeOCR.pdf",
+            "x-email-filename": "fusionizeOCR.pdf",
             "callid": event.headers["Callid"]
         }
     )
