@@ -95,7 +95,7 @@ func (h *Hustler) Start() {
 	h.Logger.Debug("Hustler started")
 
 	// params for swamped supervisor
-	nWorkers, urgencyMs, frequencyMs := 256, 12_000, 10_000
+	nWorkers, urgencyMs, frequencyMs := 15, 12_000, 10_000
 	// params for bored supervisor
 	batchSize := 100
 	workersForFunctions := map[string]int{
@@ -103,7 +103,7 @@ func (h *Hustler) Start() {
 		"helloworld1": 3,
 		"helloworld2": 3,
 		"check":       10, // TODO this needs to be waaay bigger, relative to the load we put it under
-		"ocr":         15,
+		"ocr":         5,
 		"virus":       10,
 		"email":       10,
 	}

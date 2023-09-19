@@ -53,16 +53,16 @@ def get_cpu_share(start, end, current):
 
     # if the current time is in the first third of the experiment
     if current < length/3:
-        # return 95%
-        return "0.95"
+        return "0.80"
     # if the current time is in the last third of the experiment
     elif current > 2*length/3:
-        # return 15%
         return "0.15"
     # if the current time is in the middle third of the experiment
     else:
         # calculate the cpu share based on the current time
-        return str(round(0.95 - (current - length/3) / (length/3) * 0.8, 2))
+        return str(round(((-1.95/length)*current + 1.45), 2))
+        # the value if you want to go from 50 to 15:
+        # return str(round(((-105/length)*current + 85)/100, 2))
 
 if __name__ == "__main__":
 

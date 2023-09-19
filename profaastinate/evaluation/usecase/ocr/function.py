@@ -36,6 +36,9 @@ def ocr(context, event):
         if event.headers.get(header) is None:
             context.logger.debug(f"set missing header {header} to {expected_headers[header]}")
             event.headers[header] = expected_headers[header]
+    
+
+    callid = event.headers["Callid"]
 
 
     # get file (filename from header) from minio
@@ -60,7 +63,7 @@ def ocr(context, event):
         if "Forceocr" in event.headers:
             forceOCR = bool(event.headers["Forceocr"])
         # tesseract_timeout is in seconds, default is 180. We use 15 to make sure the cpu cores are not blocked the whole experiment
-        ocrmypdf.ocr(pathIn, pathOut, force_ocr=forceOCR,tesseract_timeout=15, optimize=0, progess_bar=False)
+        ocrmypdf.ocr(pathIn, pathOut, force_ocr=forceOCR,tesseract_timeout=15, optimize=0, progess_bar=False, output_type="pdf", fast_web_view=0, skip_big=1)
         responseMsg = f"OCR successful! Stored output in '{pathOut}'"
         # delete the pathOut file
         os.remove(pathOut)
@@ -72,7 +75,6 @@ def ocr(context, event):
     #minioClient.fput_object(minioBucket, f"OCR_{filename}", pathOut)
 
     # call next function
-    callid = event.headers["Callid"]
     response = requests.get(
         nuclioURL,
         headers={
