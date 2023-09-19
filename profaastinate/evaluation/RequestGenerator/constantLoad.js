@@ -19,7 +19,9 @@ export default function () {
         'x-nuclio-function-namespace': 'nuclio',
       };
     
+      const startTime = Date.now();
       // Send a GET request
       let res = http.get('http://localhost:8070/api/function_invocations', { headers: headers });
+      console.log("K6MAGICSTRING" + startTime + ", " + res.timings.duration + "K7MAGICSTRING")
       check(res, {"Response Status is 204": (r) => r.status == 200})
 }
