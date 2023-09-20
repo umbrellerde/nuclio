@@ -111,7 +111,7 @@ func (h *Hustler) Start() {
 	// begin by starting swamped supervisor
 	stopSwamped, stopBored := false, true
 	supervisorDone := make(chan bool)
-	go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
+	go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, 0, &supervisorDone)
 
 	h.Logger.Debug("Hustler started first swamped supervisor")
 
@@ -132,7 +132,7 @@ func (h *Hustler) Start() {
 			<-supervisorDone
 			h.Logger.Debug("Hustler thinks the swamped supervisor is done")
 			// start bored supervisor
-			go h.swampedSupervisor(&stopBored, nWorkers*2, urgencyMs*3, frequencyMs, &supervisorDone)
+			go h.swampedSupervisor(&stopBored, nWorkers, urgencyMs, frequencyMs, 48, &supervisorDone)
 			// This is old and does not reaaally work unfortunately
 			//go h.slightlyLessBoredSupervisor(batchSize, workersForFunctions, &stopBored, &supervisorDone)
 			h.Logger.Debug("Hustler started the bored supervisor")
@@ -144,7 +144,7 @@ func (h *Hustler) Start() {
 			<-supervisorDone
 			h.Logger.Debug("Hustler thinks the bored supervisor is done")
 			// start swamped supervisor
-			go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
+			go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, 0, &supervisorDone)
 			h.Logger.Debug("Hustler started the swamped supervisor")
 		}
 	}
@@ -153,7 +153,7 @@ func (h *Hustler) Start() {
 // A swampedSupervisor performs urgent calls for _all_ functions
 // urgencyMs determines how close a call's deadline has to be to make it urgent (e.g. 10_000ms)
 // frequencyMs
-func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int, supervisorDone *chan bool) {
+func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs, minResults int, supervisorDone *chan bool) {
 
 	h.Logger.Debug("swampedSupervisor started")
 
@@ -182,7 +182,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 		}
 
 		// get the calls from the database
-		calls := h.getUrgentCalls(urgencyMs)
+		calls := h.getUrgentCalls(urgencyMs, minResults)
 		nCalls := 0
 		for _, f := range calls {
 			for range f {
@@ -210,7 +210,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 
 // getUrgentCalls gets and deletes the urgent calls from the database
 // urgencyMs: e.g., calls that are due in 10_000 ms are urgent
-func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
+func (h *Hustler) getUrgentCalls(urgencyMs, minResults int) map[string][]FunctionCall {
 
 	ctx := context.Background()
 	calls := make(map[string][]FunctionCall)
@@ -228,8 +228,8 @@ func (h *Hustler) getUrgentCalls(urgencyMs int) map[string][]FunctionCall {
 	}(tx, context.Background())
 
 	// get the urgent calls
-	rows, err := tx.Query(ctx, UrgentCallsQuery(urgencyMs))
-	h.Logger.Debug("Urgent calls query: " + UrgentCallsQuery(urgencyMs))
+	rows, err := tx.Query(ctx, UrgentCallsQuery(urgencyMs, minResults))
+	h.Logger.Debug("Urgent calls query: " + UrgentCallsQuery(urgencyMs, minResults))
 	if err != nil {
 		h.Logger.Error(err)
 		h.Logger.Error("could not retrieve urgent calls from delayed_calls: " + err.Error())
@@ -292,6 +292,13 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 			calls[call.fname] = append(calls[call.fname], *call)
 		}
 
+		// delete call from DB
+		ids := getIds(calls)
+		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
+		if err != nil {
+			h.Logger.Warn("slightlyLessBoredSupervisor encountered error while trying to delete calls from DB: %s", err.Error())
+		}
+
 		// create workers and forward calls to them
 		for functionName, functionCalls := range calls {
 
@@ -316,13 +323,6 @@ func (h *Hustler) slightlyLessBoredSupervisor(batchSize int, workersForFunctions
 			for _, call := range functionCalls {
 				callsForFunctions[functionName] <- call
 			}
-		}
-
-		// delete call from DB
-		ids := getIds(calls)
-		_, err = tx.Exec(ctx, `DELETE FROM delayed_calls WHERE id = any($1)`, ids)
-		if err != nil {
-			h.Logger.Warn("slightlyLessBoredSupervisor encountered error while trying to delete calls from DB: %s", err.Error())
 		}
 
 		// commit transactions

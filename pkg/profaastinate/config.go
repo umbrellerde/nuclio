@@ -1,6 +1,9 @@
 package profaastinate
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 const (
 	connString        = "postgres://postgres:1234@postgres:5432/postgres"
@@ -17,11 +20,22 @@ const (
 	deleteCallsQuery = `DELETE FROM delayed_calls WHERE id <= $1;`
 )
 
-func UrgentCallsQuery(ms int) string {
+func UrgentCallsQuery(ms, minResults int) string {
 	if ms < 0 {
-		panic("So nicht!")
+		panic("So nich!")
 	}
-	return "SELECT * from delayed_calls WHERE deadline <= now() + interval '" + strconv.Itoa(ms) + " milliseconds';"
+	sql := `
+SELECT *
+FROM delayed_calls
+WHERE deadline <= now() + interval '%s milliseconds'
+UNION ALL
+(SELECT *
+FROM delayed_calls
+ORDER BY deadline ASC
+LIMIT %d);
+`
+	sql = fmt.Sprintf(sql, strconv.Itoa(ms), minResults)
+	return sql
 }
 
 // GenerateListOfIds generates list of ids of function calls to use in DELETE statement
