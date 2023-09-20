@@ -91,12 +91,10 @@ func (m *Megavisor) Start() {
 			m.Logger.Info("It's my time to shine! (swamped mode activated)")
 			m.mode = Swamped
 			m.modeChannel <- Swamped
+		} else if avg <= float64(m.boredBoundary) && m.mode != Bored {
+			m.Logger.Info("This is boring, I could do so much more!")
+			m.mode = Bored
+			m.modeChannel <- Bored
 		}
-
-		// else if avg <= float64(m.boredBoundary) && m.mode != Bored {
-		// 	m.Logger.Info("This is boring, I could do so much more!")
-		// 	m.mode = Bored
-		// 	m.modeChannel <- Bored
-		// }
 	}
 }

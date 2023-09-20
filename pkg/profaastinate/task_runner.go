@@ -97,16 +97,16 @@ func (h *Hustler) Start() {
 	// params for swamped supervisor
 	nWorkers, urgencyMs, frequencyMs := 48, 12_000, 10_000
 	// params for bored supervisor
-	batchSize := 100
-	workersForFunctions := map[string]int{
-		"helloworld":  3,
-		"helloworld1": 3,
-		"helloworld2": 3,
-		"check":       20, // TODO this needs to be waaay bigger, relative to the load we put it under
-		"ocr":         10,
-		"virus":       20,
-		"email":       20,
-	}
+	//batchSize := 100
+	//workersForFunctions := map[string]int{
+	//	"helloworld":  3,
+	//	"helloworld1": 3,
+	//	"helloworld2": 3,
+	//	"check":       20, // TODO this needs to be waaay bigger, relative to the load we put it under
+	//	"ocr":         10,
+	//	"virus":       20,
+	//	"email":       20,
+	//}
 
 	// begin by starting swamped supervisor
 	stopSwamped, stopBored := false, true
@@ -132,7 +132,9 @@ func (h *Hustler) Start() {
 			<-supervisorDone
 			h.Logger.Debug("Hustler thinks the swamped supervisor is done")
 			// start bored supervisor
-			go h.slightlyLessBoredSupervisor(batchSize, workersForFunctions, &stopBored, &supervisorDone)
+			go h.swampedSupervisor(&stopBored, nWorkers*2, urgencyMs*3, frequencyMs, &supervisorDone)
+			// This is old and does not reaaally work unfortunately
+			//go h.slightlyLessBoredSupervisor(batchSize, workersForFunctions, &stopBored, &supervisorDone)
 			h.Logger.Debug("Hustler started the bored supervisor")
 		case Swamped:
 			h.Logger.Debug("Hustler is stopping the bored supervisor")
@@ -176,7 +178,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 
 		// if the hustler tells the swampedSupervisor to stop, end the function
 		if *stopIt {
-			goto theEnd // This is _very_ clean code, @google -- I'll be hearing from you
+			break // This is _very_ clean code, @google -- I'll be hearing from you
 		}
 
 		// get the calls from the database
@@ -202,7 +204,6 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 		}
 	}
 
-theEnd:
 	h.Logger.Debug("SwampedSupervisor is finished")
 	*supervisorDone <- true
 }
