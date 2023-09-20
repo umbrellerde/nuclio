@@ -7,7 +7,7 @@
 # Experiment Run
 
 0. Start the collectCPUusage.sh script
-1. Start CPU Load Generator and K6 load generator. Setup k6 to collect logs! --output-file=file=./sync.log
+1. Start CPU Load Generator and K6 load generator. Setup k6 to collect logs! --log-output=file=./sync.log
 2. Wait until all functions have been executed (i.e., db has no entries anymore)
 3. stop collecting CPU usage and copy over the resulting file and k6 logs
 4. `./collectLogsFromContainers.sh` and copy over the resulting files
