@@ -88,7 +88,7 @@ def check(context, event):
 
     # return parsed metadata
     return context.Response(
-        body=str(document.info),
+        body=str(callid),
         headers={},
         content_type='text/plain',
         status_code=200

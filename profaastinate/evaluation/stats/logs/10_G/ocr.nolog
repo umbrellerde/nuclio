@@ -1,0 +1,921 @@
+23.09.19 14:46:40.848 [37m                processor[0m [34m(I)[0m Starting processor {"version": "Label: latest, Git commit: b4c510e24d15e0f622ba602b6ae4eaf9b43d2eac, OS: linux, Arch: amd64, Go version: go1.18.1"}
+23.09.19 14:46:40.848 [37m                processor[0m [32m(D)[0m Read configuration {"config": "{\n    \"metadata\": {\n        \"name\": \"ocr\",\n        \"namespace\": \"nuclio\",\n        \"labels\": {\n            \"nuclio.io/project-name\": \"default\"\n        }\n    },\n    \"spec\": {\n        \"handler\": \"main:ocr\",\n        \"runtime\": \"python:3.9\",\n        \"resources\": {\n            \"requests\": {\n                \"cpu\": \"25m\",\n                \"memory\": \"1Mi\"\n            }\n        },\n        \"image\": \"nuclio/processor-ocr:latest\",\n        \"triggers\": {\n            \"default-http\": {\n                \"class\": \"\",\n                \"kind\": \"http\",\n                \"name\": \"default-http\",\n                \"maxWorkers\": 40\n            }\n        },\n        \"build\": {\n            \"functionSourceCode\": \"aW1wb3J0IG9jcm15cGRmDQppbXBvcnQgcmVxdWVzdHMNCmltcG9ydCB1dWlkDQppbXBvcnQgb3MNCmltcG9ydCBqc29uDQppbXBvcnQgdGltZQ0KDQoNCmZyb20gcGRmbWluZXIucGRmcGFyc2VyIGltcG9ydCBQREZQYXJzZXINCmZyb20gcGRmbWluZXIucGRmZG9jdW1lbnQgaW1wb3J0IFBERkRvY3VtZW50DQpmcm9tIG1pbmlvIGltcG9ydCBNaW5pbw0KDQpkZWYgb2NyKGNvbnRleHQsIGV2ZW50KToNCg0KICAgIHN0YXJ0X3RzID0gdGltZS50aW1lKCkgKiAxMDAwDQogICAgIyBUT0RPIGNoYW5nZSAnaG9zdC5kb2NrZXIuaW50ZXJuYWwnIHRvICdsb2NhbGhvc3QnIG9uIGxpbnV4DQogICAgY29udGV4dC5sb2dnZXIuZGVidWcoIm9jciBmdW5jdGlvbiBzdGFydCIpDQogICAgbnVjbGlvVVJMID0gImh0dHA6Ly9ob3N0LmRvY2tlci5pbnRlcm5hbDo4MDcwL2FwaS9mdW5jdGlvbl9pbnZvY2F0aW9ucyINCiAgICBtaW5pb1VSTCA9ICJob3N0LmRvY2tlci5pbnRlcm5hbDo5MDAwIg0KICAgIG1pbmlvQnVja2V0ID0gInByb2ZhYXN0aW5hdGUiDQoNCiAgICByZXNwb25zZU1zZyA9ICIiDQogICAgZm9yY2VPQ1IgPSBGYWxzZQ0KDQoNCiAgICAjIHNldCBtaXNzaW5nIGhlYWRlcnMgKGUuZy4sIGluIGNhc2UgZnVuY3Rpb24gd2FzIGNhbGxlZCBzeW5jaHJvbm91c2x5KQ0KICAgIGV4cGVjdGVkX2hlYWRlcnMgPSB7DQogICAgICAgICJDYWxsaWQiOiB1dWlkLnV1aWQ0KCkuaGV4LA0KICAgICAgICAiWC1DaGVjay1GaWxlbmFtZSI6ICJmdXNpb25pemUucGRmIiwNCiAgICAgICAgIlgtVmlydXMtRmlsZW5hbWUiOiAiZnVzaW9uaXplLnBkZiIsDQogICAgICAgICJYLU9jci1GaWxlbmFtZSI6ICJmdXNpb25pemUucGRmIiwNCiAgICAgICAgIlgtRW1haWwtRmlsZW5hbWUiOiAiZnVzaW9uaXplT0NSLnBkZiIsDQogICAgICAgICJGb3JjZW9jciI6IFRydWUsDQogICAgfQ0KICAgIGZvciBoZWFkZXIgaW4gZXhwZWN0ZWRfaGVhZGVyczoNCiAgICAgICAgaWYgZXZlbnQuaGVhZGVycy5nZXQoaGVhZGVyKSBpcyBOb25lOg0KICAgICAgICAgICAgY29udGV4dC5sb2dnZXIuZGVidWcoZiJzZXQgbWlzc2luZyBoZWFkZXIge2hlYWRlcn0gdG8ge2V4cGVjdGVkX2hlYWRlcnNbaGVhZGVyXX0iKQ0KICAgICAgICAgICAgZXZlbnQuaGVhZGVyc1toZWFkZXJdID0gZXhwZWN0ZWRfaGVhZGVyc1toZWFkZXJdDQogICAgDQoNCiAgICBjYWxsaWQgPSBldmVudC5oZWFkZXJzWyJDYWxsaWQiXQ0KDQoNCiAgICAjIGdldCBmaWxlIChmaWxlbmFtZSBmcm9tIGhlYWRlcikgZnJvbSBtaW5pbw0KICAgIGZpbGVuYW1lID0gInRlc3QucGRmIiBpZiBldmVudC5oZWFkZXJzLmdldCgiWC1PY3ItRmlsZW5hbWUiKSBpcyBOb25lIGVsc2UgZXZlbnQuaGVhZGVyc1siWC1PY3ItRmlsZW5hbWUiXQ0KICAgIGRlYWRsaW5lID0gIjE4MDAwMCINCiAgICBjb250ZXh0LmxvZ2dlci5kZWJ1ZyhmImZpbGVuYW1lPXtmaWxlbmFtZX0iKQ0KDQogICAgIyBUT0RPIGNoYW5nZSAnaG9zdC5kb2NrZXIuaW50ZXJuYWwnIHRvICdsb2NhbGhvc3QnIG9uIGxpbnV4DQogICAgcGF0aEluLCBwYXRoT3V0ID0gZiIvdG1wL3tmaWxlbmFtZX0iLCBmIi90bXAve2NhbGxpZH1fT0NSX3tmaWxlbmFtZX0iDQogICAgbWluaW9DbGllbnQgPSBNaW5pbyhtaW5pb1VSTCwgYWNjZXNzX2tleT0ibWluaW9hZG1pbiIsIHNlY3JldF9rZXk9Im1pbmlvYWRtaW4iLCBzZWN1cmU9RmFsc2UpDQoNCiAgICAjIG9ubHkgZ2V0IHRoZSBmaWxlIGZyb20gbWluaW8gaWYgaXQgaXMgbm90IGFscmVhZHkgaW4gdGhlIGxvY2FsIGZpbGVzeXN0ZW0NCiAgICBpZiBub3Qgb3MucGF0aC5leGlzdHMocGF0aEluKToNCiAgICAgICAgY29udGV4dC5sb2dnZXIuZGVidWcoImZpbGUgbm90IGluIGxvY2FsIGZpbGVzeXN0ZW0sIGdldHRpbmcgZnJvbSBtaW5pbyIpDQogICAgICAgIG1pbmlvQ2xpZW50LmZnZXRfb2JqZWN0KG1pbmlvQnVja2V0LCBmaWxlbmFtZSwgcGF0aEluKQ0KICAgIGNvbnRleHQubG9nZ2VyLmRlYnVnKCJzdG9yZWQgUERGIGZyb20gbWluaW8gbG9jYWxseSIpDQoNCiAgICAjIGRvIG9jcg0KICAgIHRyeToNCiAgICAgICAgIyBBdCBzb21lIHBvaW50LCBudWNsaW8vcHl0aG9uIGNoYW5nZXMgdGhlIGNhcGl0YWxpemF0aW9uIG9mIHRoZSBoZWFkZXIgZmllbGQ7IGhlbmNlLCAnRm9yY2VvY3InIGluc3RlYWQgb2YgJ2ZvcmNlT0NSJw0KICAgICAgICBmb3JjZU9DUiA9IEZhbHNlDQogICAgICAgIGlmICJGb3JjZW9jciIgaW4gZXZlbnQuaGVhZGVyczoNCiAgICAgICAgICAgIGZvcmNlT0NSID0gYm9vbChldmVudC5oZWFkZXJzWyJGb3JjZW9jciJdKQ0KICAgICAgICAjIHRlc3NlcmFjdF90aW1lb3V0IGlzIGluIHNlY29uZHMsIGRlZmF1bHQgaXMgMTgwLiBXZSB1c2UgMTUgdG8gbWFrZSBzdXJlIHRoZSBjcHUgY29yZXMgYXJlIG5vdCBibG9ja2VkIHRoZSB3aG9sZSBleHBlcmltZW50DQogICAgICAgIG9jcm15cGRmLm9jcihwYXRoSW4sIHBhdGhPdXQsIGZvcmNlX29jcj1mb3JjZU9DUix0ZXNzZXJhY3RfdGltZW91dD0xNSwgb3B0aW1pemU9MCwgcHJvZ2Vzc19iYXI9RmFsc2UsIG91dHB1dF90eXBlPSJwZGYiLCBmYXN0X3dlYl92aWV3PTAsIHNraXBfYmlnPTEpDQogICAgICAgIHJlc3BvbnNlTXNnID0gZiJPQ1Igc3VjY2Vzc2Z1bCEgU3RvcmVkIG91dHB1dCBpbiAne3BhdGhPdXR9JyINCiAgICAgICAgIyBkZWxldGUgdGhlIHBhdGhPdXQgZmlsZQ0KICAgICAgICBvcy5yZW1vdmUocGF0aE91dCkNCiAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6DQogICAgICAgIGNvbnRleHQubG9nZ2VyLmVycm9yKGYiT0NSIGZhaWxlZDoge3N0cihlKX0iKQ0KICAgICAgICByZXNwb25zZU1zZyA9IGYie3N0cihlKX0iDQoNCiAgICAjIHB1dCBPQ1InZCBmaWxlIGludG8gbWluaW8NCiAgICAjbWluaW9DbGllbnQuZnB1dF9vYmplY3QobWluaW9CdWNrZXQsIGYiT0NSX3tmaWxlbmFtZX0iLCBwYXRoT3V0KQ0KDQogICAgIyBjYWxsIG5leHQgZnVuY3Rpb24NCiAgICByZXNwb25zZSA9IHJlcXVlc3RzLmdldCgNCiAgICAgICAgbnVjbGlvVVJMLA0KICAgICAgICBoZWFkZXJzPXsNCiAgICAgICAgICAgICJ4LW51Y2xpby1mdW5jdGlvbi1uYW1lIjogImVtYWlsIiwNCiAgICAgICAgICAgICJ4LW51Y2xpby1mdW5jaXRpb24tbmFtZXNwYWNlIjogIm51Y2xpbyIsDQogICAgICAgICAgICAieC1udWNsaW8tYXN5bmMiOiAidHJ1ZSIsDQogICAgICAgICAgICAieC1udWNsaW8tYXN5bmMtZGVhZGxpbmUiOiBkZWFkbGluZSwNCiAgICAgICAgICAgICJ4LWVtYWlsLWZpbGVuYW1lIjogImZ1c2lvbml6ZU9DUi5wZGYiLA0KICAgICAgICAgICAgImNhbGxpZCI6IGV2ZW50LmhlYWRlcnNbIkNhbGxpZCJdDQogICAgICAgIH0NCiAgICApDQogICAgY29udGV4dC5sb2dnZXIuZGVidWcocmVzcG9uc2UpDQogICAgY29udGV4dC5sb2dnZXIuZGVidWcoIm9jciBmdW5jdGlvbiBlbmQiKQ0KDQogICAgZW5kX3RzID0gdGltZS50aW1lKCkgKiAxMDAwDQogICAgZXZhbF9pbmZvID0gew0KICAgICAgICAiZnVuY3Rpb24iOiAib2NyIiwNCiAgICAgICAgInN0YXJ0Ijogc3RhcnRfdHMsDQogICAgICAgICJlbmQiOiBlbmRfdHMsDQogICAgICAgICJjYWxsaWQiOiBjYWxsaWQNCiAgICB9DQogICAgaWYgZXZlbnQuaGVhZGVycy5nZXQoIlByb2ZhYXN0aW5hdGUtUmVxdWVzdC1UaW1lc3RhbXAiKToNCiAgICAgICAgZXZhbF9pbmZvWyJyZXF1ZXN0X3RpbWVzdGFtcCJdID0gZXZlbnQuaGVhZGVyc1siUHJvZmFhc3RpbmF0ZS1SZXF1ZXN0LVRpbWVzdGFtcCJdDQogICAgaWYgZXZlbnQuaGVhZGVycy5nZXQoIlByb2ZhYXN0aW5hdGUtUmVxdWVzdC1EZWFkbGluZSIpOg0KICAgICAgICBldmFsX2luZm9bInJlcXVlc3RfZGVhZGxpbmUiXSA9IGV2ZW50LmhlYWRlcnNbIlByb2ZhYXN0aW5hdGUtUmVxdWVzdC1EZWFkbGluZSJdDQogICAgaWYgZXZlbnQuaGVhZGVycy5nZXQoIlByb2ZhYXN0aW5hdGUtTW9kZSIpOg0KICAgICAgICBldmFsX2luZm9bIm1vZGUiXSA9IGV2ZW50LmhlYWRlcnNbIlByb2ZhYXN0aW5hdGUtTW9kZSJdDQogICAgZWxzZToNCiAgICAgICAgZXZhbF9pbmZvWyJtb2RlIl0gPSAic3luYyINCiAgICBjb250ZXh0LmxvZ2dlci53YXJuKGYiUEZTVFR7anNvbi5kdW1wcyhldmFsX2luZm8pfVRUU0ZQIikNCg0KICAgICMgcmV0dXJuIHRoZSBlbmNyeXB0ZWQgYm9keSwgYW5kIHNvbWUgaGFyZC1jb2RlZCBoZWFkZXINCiAgICByZXR1cm4gY29udGV4dC5SZXNwb25zZShib2R5PXJlc3BvbnNlTXNnLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhlYWRlcnM9eyd4LWVuY3J5cHQtYWxnbyc6ICdhZXMyNTYnfSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250ZW50X3R5cGU9J3RleHQvcGxhaW4nLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1c19jb2RlPTIwMCkNCg==\",\n            \"noBaseImagesPull\": true,\n            \"commands\": [\n                \"apt-get update\",\n                \"apt-get install ocrmypdf -y\",\n                \"pip install pytesseract\",\n                \"pip install ocrmypdf\",\n                \"pip install pdfminer\",\n                \"pip install minio\",\n                \"pip install requests\"\n            ],\n            \"runtimeAttributes\": {\n                \"repositories\": []\n            },\n            \"codeEntryType\": \"sourceCode\",\n            \"timestamp\": 1695134795\n        },\n        \"loggerSinks\": [\n            {\n                \"level\": \"debug\"\n            }\n        ],\n        \"platform\": {},\n        \"securityContext\": {},\n        \"eventTimeout\": \"\"\n    },\n    \"PlatformConfig\": null\n}"}
+23.09.19 14:46:40.848 [37mcessor.healthcheck.server[0m [34m(I)[0m Listening {"listenAddress": ":8082"}
+23.09.19 14:46:40.856 [37m           processor.http[0m [32m(D)[0m Creating worker pool {"num": 40}
+23.09.19 14:46:40.856 [37mor.http.w39.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cksg.sock"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0ckt0.sock"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.857 [37mor.http.w39.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cksg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0ckt0.sock --platform-kind local --namespace nuclio --worker-id 39 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.857 [37mor.http.w19.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cktg.sock"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cku0.sock"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.858 [37mor.http.w19.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cktg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cku0.sock --platform-kind local --namespace nuclio --worker-id 19 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0ckug.sock"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0ckv0.sock"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.858 [37msor.http.w0.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0ckug.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0ckv0.sock --platform-kind local --namespace nuclio --worker-id 0 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0ckvg.sock"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl00.sock"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.859 [37msor.http.w1.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0ckvg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl00.sock --platform-kind local --namespace nuclio --worker-id 1 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl0g.sock"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl10.sock"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.859 [37msor.http.w2.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl0g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl10.sock --platform-kind local --namespace nuclio --worker-id 2 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl1g.sock"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl20.sock"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.860 [37msor.http.w3.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl1g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl20.sock --platform-kind local --namespace nuclio --worker-id 3 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl2g.sock"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl30.sock"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.860 [37msor.http.w4.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl2g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl30.sock --platform-kind local --namespace nuclio --worker-id 4 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.860 [37msor.http.w5.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl3g.sock"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl40.sock"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.861 [37msor.http.w5.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl3g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl40.sock --platform-kind local --namespace nuclio --worker-id 5 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.861 [37msor.http.w6.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl4g.sock"}
+23.09.19 14:46:40.861 [37msor.http.w6.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl50.sock"}
+23.09.19 14:46:40.861 [37msor.http.w7.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl5g.sock"}
+23.09.19 14:46:40.862 [37msor.http.w8.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl60.sock"}
+23.09.19 14:46:40.862 [37msor.http.w8.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl6g.sock"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl70.sock"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl7g.sock"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.862 [37msor.http.w9.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl70.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl7g.sock --platform-kind local --namespace nuclio --worker-id 9 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.863 [37mor.http.w10.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl80.sock"}
+23.09.19 14:46:40.863 [37mor.http.w10.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl8g.sock"}
+23.09.19 14:46:40.863 [37mor.http.w11.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl90.sock"}
+23.09.19 14:46:40.863 [37mor.http.w12.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cl9g.sock"}
+23.09.19 14:46:40.863 [37mor.http.w12.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cla0.sock"}
+23.09.19 14:46:40.863 [37mor.http.w13.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clag.sock"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clb0.sock"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.864 [37mor.http.w13.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clag.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clb0.sock --platform-kind local --namespace nuclio --worker-id 13 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.864 [37mor.http.w14.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clbg.sock"}
+23.09.19 14:46:40.864 [37mor.http.w15.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clc0.sock"}
+23.09.19 14:46:40.864 [37mor.http.w16.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clcg.sock"}
+23.09.19 14:46:40.864 [37mor.http.w17.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cldg.sock"}
+23.09.19 14:46:40.865 [37mor.http.w18.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cle0.sock"}
+23.09.19 14:46:40.865 [37mor.http.w18.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cleg.sock"}
+23.09.19 14:46:40.861 [37msor.http.w6.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.865 [37msor.http.w6.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.865 [37msor.http.w6.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.865 [37msor.http.w6.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.865 [37msor.http.w6.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl4g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl50.sock --platform-kind local --namespace nuclio --worker-id 6 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.865 [37msor.http.w7.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clf0.sock"}
+23.09.19 14:46:40.865 [37msor.http.w8.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.865 [37msor.http.w8.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.865 [37msor.http.w8.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.865 [37msor.http.w8.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.865 [37msor.http.w8.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl60.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl6g.sock --platform-kind local --namespace nuclio --worker-id 8 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.866 [37mor.http.w10.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.866 [37mor.http.w10.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.866 [37mor.http.w10.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.866 [37mor.http.w10.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.866 [37mor.http.w10.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl80.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl8g.sock --platform-kind local --namespace nuclio --worker-id 10 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.866 [37mor.http.w11.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clfg.sock"}
+23.09.19 14:46:40.863 [37mor.http.w12.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.868 [37mor.http.w12.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.868 [37mor.http.w12.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.868 [37mor.http.w12.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.868 [37mor.http.w12.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl9g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cla0.sock --platform-kind local --namespace nuclio --worker-id 12 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.866 [37mor.http.w16.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cld0.sock"}
+23.09.19 14:46:40.870 [37mor.http.w16.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.870 [37mor.http.w16.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.870 [37mor.http.w16.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.870 [37mor.http.w16.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.870 [37mor.http.w16.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clcg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cld0.sock --platform-kind local --namespace nuclio --worker-id 16 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.867 [37mor.http.w17.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clgg.sock"}
+23.09.19 14:46:40.870 [37mor.http.w17.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.871 [37mor.http.w17.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.871 [37mor.http.w17.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.871 [37mor.http.w17.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.871 [37mor.http.w17.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cldg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clgg.sock --platform-kind local --namespace nuclio --worker-id 17 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.865 [37mor.http.w18.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.865 [37msor.http.w7.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.886 [37msor.http.w7.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.866 [37mor.http.w11.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.867 [37mor.http.w15.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clg0.sock"}
+23.09.19 14:46:40.886 [37mor.http.w18.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.887 [37mor.http.w18.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.888 [37mor.http.w18.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.888 [37mor.http.w18.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cle0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cleg.sock --platform-kind local --namespace nuclio --worker-id 18 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.888 [37msor.http.w7.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.888 [37msor.http.w7.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.887 [37mor.http.w11.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.888 [37mor.http.w11.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.888 [37msor.http.w7.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl5g.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clf0.sock --platform-kind local --namespace nuclio --worker-id 7 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.888 [37mor.http.w11.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.888 [37mor.http.w11.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cl90.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clfg.sock --platform-kind local --namespace nuclio --worker-id 11 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.867 [37mor.http.w29.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clh0.sock"}
+23.09.19 14:46:40.927 [37mor.http.w15.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.927 [37mor.http.w15.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.927 [37mor.http.w15.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.927 [37mor.http.w15.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.927 [37mor.http.w15.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clc0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clg0.sock --platform-kind local --namespace nuclio --worker-id 15 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.867 [37mor.http.w20.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clhg.sock"}
+23.09.19 14:46:40.928 [37mor.http.w20.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cln0.sock"}
+23.09.19 14:46:40.928 [37mor.http.w34.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clmg.sock"}
+23.09.19 14:46:40.867 [37mor.http.w21.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cli0.sock"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clm0.sock"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clo0.sock"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.929 [37mor.http.w28.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clm0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clo0.sock --platform-kind local --namespace nuclio --worker-id 28 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clog.sock"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clp0.sock"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.930 [37mor.http.w31.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clog.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clp0.sock --platform-kind local --namespace nuclio --worker-id 31 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.930 [37mor.http.w32.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clpg.sock"}
+23.09.19 14:46:40.930 [37mor.http.w32.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clq0.sock"}
+23.09.19 14:46:40.930 [37mor.http.w32.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.931 [37mor.http.w32.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.931 [37mor.http.w32.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.931 [37mor.http.w32.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.931 [37mor.http.w32.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clpg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clq0.sock --platform-kind local --namespace nuclio --worker-id 32 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clqg.sock"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clr0.sock"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.931 [37mor.http.w33.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clqg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clr0.sock --platform-kind local --namespace nuclio --worker-id 33 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.931 [37mor.http.w36.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clrg.sock"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cls0.sock"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.932 [37mor.http.w36.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clrg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cls0.sock --platform-kind local --namespace nuclio --worker-id 36 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.932 [37mor.http.w35.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clsg.sock"}
+23.09.19 14:46:40.933 [37mor.http.w35.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clt0.sock"}
+23.09.19 14:46:40.942 [37mor.http.w35.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.943 [37mor.http.w35.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.943 [37mor.http.w35.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.943 [37mor.http.w35.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.943 [37mor.http.w35.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clsg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clt0.sock --platform-kind local --namespace nuclio --worker-id 35 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clv0.sock"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clng.sock"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clvg.sock"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.943 [37mor.http.w34.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clmg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clv0.sock --platform-kind local --namespace nuclio --worker-id 34 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.943 [37mor.http.w21.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm00.sock"}
+23.09.19 14:46:40.943 [37mor.http.w30.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clng.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clvg.sock --platform-kind local --namespace nuclio --worker-id 30 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.944 [37mor.http.w21.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.944 [37mor.http.w21.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.938 [37mor.http.w20.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.944 [37mor.http.w21.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.944 [37mor.http.w21.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.944 [37mor.http.w21.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cli0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm00.sock --platform-kind local --namespace nuclio --worker-id 21 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.944 [37mor.http.w20.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.944 [37mor.http.w20.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.944 [37mor.http.w20.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.867 [37mor.http.w23.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clj0.sock"}
+23.09.19 14:46:40.944 [37mor.http.w20.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clhg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cln0.sock --platform-kind local --namespace nuclio --worker-id 20 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.944 [37mor.http.w23.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm0g.sock"}
+23.09.19 14:46:40.867 [37mor.http.w24.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cljg.sock"}
+23.09.19 14:46:40.944 [37mor.http.w24.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm10.sock"}
+23.09.19 14:46:40.868 [37mor.http.w25.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clk0.sock"}
+23.09.19 14:46:40.945 [37mor.http.w24.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.945 [37mor.http.w24.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.945 [37mor.http.w24.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.945 [37mor.http.w24.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.945 [37mor.http.w24.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cljg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm10.sock --platform-kind local --namespace nuclio --worker-id 24 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.945 [37mor.http.w25.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm1g.sock"}
+23.09.19 14:46:40.945 [37mor.http.w25.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.945 [37mor.http.w25.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.868 [37mor.http.w26.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clkg.sock"}
+23.09.19 14:46:40.945 [37mor.http.w26.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm20.sock"}
+23.09.19 14:46:40.945 [37mor.http.w26.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.945 [37mor.http.w26.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.946 [37mor.http.w26.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.946 [37mor.http.w26.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.946 [37mor.http.w26.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clkg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm20.sock --platform-kind local --namespace nuclio --worker-id 26 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.868 [37mor.http.w27.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cll0.sock"}
+23.09.19 14:46:40.946 [37mor.http.w27.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm2g.sock"}
+23.09.19 14:46:40.868 [37mor.http.w14.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cllg.sock"}
+23.09.19 14:46:40.946 [37mor.http.w14.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.946 [37mor.http.w14.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.946 [37mor.http.w14.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.946 [37mor.http.w14.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.946 [37mor.http.w14.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clbg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cllg.sock --platform-kind local --namespace nuclio --worker-id 14 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.867 [37mor.http.w22.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clig.sock"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm30.sock"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.947 [37mor.http.w22.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clig.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm30.sock --platform-kind local --namespace nuclio --worker-id 22 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.939 [37mor.http.w37.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cltg.sock"}
+23.09.19 14:46:40.945 [37mor.http.w25.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.947 [37mor.http.w25.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.947 [37mor.http.w25.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clk0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm1g.sock --platform-kind local --namespace nuclio --worker-id 25 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.948 [37mor.http.w23.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.948 [37mor.http.w23.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.948 [37mor.http.w23.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.948 [37mor.http.w23.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.948 [37mor.http.w23.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clj0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm0g.sock --platform-kind local --namespace nuclio --worker-id 23 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.939 [37mor.http.w38.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clu0.sock"}
+23.09.19 14:46:40.939 [37mor.http.w29.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0clug.sock"}
+23.09.19 14:46:40.950 [37mor.http.w27.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.950 [37mor.http.w27.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.950 [37mor.http.w27.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.950 [37mor.http.w27.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.950 [37mor.http.w27.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cll0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm2g.sock --platform-kind local --namespace nuclio --worker-id 27 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.950 [37mor.http.w29.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.950 [37mor.http.w38.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm3g.sock"}
+23.09.19 14:46:40.950 [37mor.http.w29.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.950 [37mor.http.w29.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.950 [37mor.http.w29.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.950 [37mor.http.w29.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clh0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clug.sock --platform-kind local --namespace nuclio --worker-id 29 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.950 [37mor.http.w38.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.950 [37mor.http.w38.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.951 [37mor.http.w38.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.951 [37mor.http.w38.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.951 [37mor.http.w38.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0clu0.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm3g.sock --platform-kind local --namespace nuclio --worker-id 38 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Creating listener socket {"path": "/tmp/nuclio-rpc-ck4r8k7g239c73d0cm40.sock"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Using Python wrapper script path {"path": "/opt/nuclio/_nuclio_wrapper.py"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Using Python handler {"handler": "main:ocr"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Using Python executable {"path": "/usr/local/bin/python3"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Setting PYTHONPATH {"value": "PYTHONPATH=/opt/nuclio"}
+23.09.19 14:46:40.951 [37mor.http.w37.python.logger[0m [32m(D)[0m Running wrapper {"command": "/usr/local/bin/python3 -u /opt/nuclio/_nuclio_wrapper.py --handler main:ocr --event-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cltg.sock --control-socket-path /tmp/nuclio-rpc-ck4r8k7g239c73d0cm40.sock --platform-kind local --namespace nuclio --worker-id 37 --trigger-kind http --trigger-name default-http --decode-event-strings"}
+23.09.19 14:46:54.034 [37msor.http.w3.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 3, "pid": 28}
+23.09.19 14:46:54.034 [37msor.http.w3.python.logger[0m [32m(D)[0m Creating control connection {"wid": 3}
+23.09.19 14:46:54.034 [37msor.http.w3.python.logger[0m [32m(D)[0m Control connection created {"wid": 3}
+23.09.19 14:46:54.034 [37msor.http.w3.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:54.034 [37msor.http.w3.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:54.035 [37msor.http.w3.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "3"}
+23.09.19 14:46:54.035 [37msor.http.w3.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:54.426 [37mor.http.w39.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 39, "pid": 13}
+23.09.19 14:46:54.426 [37mor.http.w39.python.logger[0m [32m(D)[0m Creating control connection {"wid": 39}
+23.09.19 14:46:54.427 [37mor.http.w39.python.logger[0m [32m(D)[0m Control connection created {"wid": 39}
+23.09.19 14:46:54.427 [37mor.http.w39.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:54.427 [37mor.http.w39.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:54.427 [37mor.http.w39.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "39"}
+23.09.19 14:46:54.427 [37mor.http.w39.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:54.994 [37mor.http.w17.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 17, "pid": 21}
+23.09.19 14:46:54.994 [37mor.http.w17.python.logger[0m [32m(D)[0m Creating control connection {"wid": 17}
+23.09.19 14:46:54.995 [37mor.http.w17.python.logger[0m [32m(D)[0m Control connection created {"wid": 17}
+23.09.19 14:46:54.995 [37mor.http.w17.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:54.995 [37mor.http.w17.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:54.995 [37mor.http.w17.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "17"}
+23.09.19 14:46:54.995 [37mor.http.w17.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:55.446 [37mor.http.w28.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 28, "pid": 50}
+23.09.19 14:46:55.458 [37mor.http.w28.python.logger[0m [32m(D)[0m Creating control connection {"wid": 28}
+23.09.19 14:46:55.510 [37mor.http.w28.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "28"}
+23.09.19 14:46:55.510 [37mor.http.w28.python.logger[0m [32m(D)[0m Control connection created {"wid": 28}
+23.09.19 14:46:55.511 [37mor.http.w28.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:55.511 [37mor.http.w28.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:55.511 [37mor.http.w28.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:56.735 [37mor.http.w12.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 12, "pid": 16}
+23.09.19 14:46:56.735 [37mor.http.w12.python.logger[0m [32m(D)[0m Creating control connection {"wid": 12}
+23.09.19 14:46:56.735 [37mor.http.w12.python.logger[0m [32m(D)[0m Control connection created {"wid": 12}
+23.09.19 14:46:56.736 [37mor.http.w12.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:56.735 [37mor.http.w12.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "12"}
+23.09.19 14:46:56.735 [37mor.http.w12.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:56.746 [37mor.http.w12.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:57.694 [37mor.http.w19.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 19, "pid": 40}
+23.09.19 14:46:57.694 [37mor.http.w19.python.logger[0m [32m(D)[0m Creating control connection {"wid": 19}
+23.09.19 14:46:57.695 [37mor.http.w19.python.logger[0m [32m(D)[0m Control connection created {"wid": 19}
+23.09.19 14:46:57.695 [37mor.http.w19.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:57.695 [37mor.http.w19.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:57.694 [37mor.http.w19.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "19"}
+23.09.19 14:46:57.695 [37mor.http.w19.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:57.746 [37mor.http.w10.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 10, "pid": 37}
+23.09.19 14:46:57.746 [37mor.http.w10.python.logger[0m [32m(D)[0m Creating control connection {"wid": 10}
+23.09.19 14:46:57.747 [37mor.http.w10.python.logger[0m [32m(D)[0m Control connection created {"wid": 10}
+23.09.19 14:46:57.747 [37mor.http.w10.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:57.747 [37mor.http.w10.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:57.747 [37mor.http.w10.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "10"}
+23.09.19 14:46:57.747 [37mor.http.w10.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:58.142 [37mor.http.w15.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 15, "pid": 26}
+23.09.19 14:46:58.142 [37mor.http.w15.python.logger[0m [32m(D)[0m Creating control connection {"wid": 15}
+23.09.19 14:46:58.186 [37mor.http.w15.python.logger[0m [32m(D)[0m Control connection created {"wid": 15}
+23.09.19 14:46:58.186 [37mor.http.w15.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:58.187 [37mor.http.w15.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:58.188 [37mor.http.w15.python.logger[0m [32m(D)[0m Sending data on control socket {"worker_id": "15", "data_length": 2}
+23.09.19 14:46:58.210 [37mor.http.w15.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:58.273 [37msor.http.w5.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 5, "pid": 30}
+23.09.19 14:46:58.282 [37msor.http.w5.python.logger[0m [32m(D)[0m Creating control connection {"wid": 5}
+23.09.19 14:46:58.298 [37msor.http.w5.python.logger[0m [32m(D)[0m Control connection created {"wid": 5}
+23.09.19 14:46:58.298 [37msor.http.w5.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:58.299 [37msor.http.w5.python.logger[0m [32m(D)[0m Started
+23.09.19 14:46:58.339 [37msor.http.w5.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "5"}
+23.09.19 14:46:58.342 [37msor.http.w5.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 37, "pid": 99}
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [32m(D)[0m Creating control connection {"wid": 37}
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [32m(D)[0m Control connection created {"wid": 37}
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:46:59.818 [37mor.http.w37.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "37"}
+23.09.19 14:46:59.819 [37mor.http.w37.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:00.514 [37mor.http.w31.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 31, "pid": 52}
+23.09.19 14:47:00.514 [37mor.http.w31.python.logger[0m [32m(D)[0m Creating control connection {"wid": 31}
+23.09.19 14:47:00.514 [37mor.http.w31.python.logger[0m [32m(D)[0m Control connection created {"wid": 31}
+23.09.19 14:47:00.514 [37mor.http.w31.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:00.514 [37mor.http.w31.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:00.515 [37mor.http.w31.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "31"}
+23.09.19 14:47:00.515 [37mor.http.w31.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 38, "pid": 97}
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Creating control connection {"wid": 38}
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Control connection created {"wid": 38}
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "38"}
+23.09.19 14:47:00.515 [37mor.http.w38.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:00.572 [37mor.http.w16.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 16, "pid": 19}
+23.09.19 14:47:00.573 [37mor.http.w16.python.logger[0m [32m(D)[0m Creating control connection {"wid": 16}
+23.09.19 14:47:00.730 [37mor.http.w16.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "16"}
+23.09.19 14:47:00.730 [37mor.http.w16.python.logger[0m [32m(D)[0m Control connection created {"wid": 16}
+23.09.19 14:47:00.730 [37mor.http.w16.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:00.730 [37mor.http.w16.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:00.730 [37mor.http.w16.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.381 [37msor.http.w9.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 9, "pid": 31}
+23.09.19 14:47:01.381 [37msor.http.w9.python.logger[0m [32m(D)[0m Creating control connection {"wid": 9}
+23.09.19 14:47:01.381 [37msor.http.w9.python.logger[0m [32m(D)[0m Control connection created {"wid": 9}
+23.09.19 14:47:01.381 [37msor.http.w9.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.382 [37msor.http.w9.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.383 [37msor.http.w9.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "9"}
+23.09.19 14:47:01.383 [37msor.http.w9.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.474 [37mor.http.w26.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 26, "pid": 78}
+23.09.19 14:47:01.476 [37mor.http.w26.python.logger[0m [32m(D)[0m Creating control connection {"wid": 26}
+23.09.19 14:47:01.489 [37mor.http.w26.python.logger[0m [32m(D)[0m Control connection created {"wid": 26}
+23.09.19 14:47:01.489 [37mor.http.w26.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.490 [37mor.http.w26.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.491 [37mor.http.w26.python.logger[0m [32m(D)[0m Sending data on control socket {"worker_id": "26", "data_length": 2}
+23.09.19 14:47:01.491 [37mor.http.w26.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.699 [37msor.http.w4.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 4, "pid": 29}
+23.09.19 14:47:01.699 [37msor.http.w4.python.logger[0m [32m(D)[0m Creating control connection {"wid": 4}
+23.09.19 14:47:01.700 [37msor.http.w4.python.logger[0m [32m(D)[0m Control connection created {"wid": 4}
+23.09.19 14:47:01.700 [37msor.http.w4.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.700 [37msor.http.w4.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.700 [37msor.http.w4.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "4"}
+23.09.19 14:47:01.700 [37msor.http.w4.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.709 [37mor.http.w30.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 30, "pid": 70}
+23.09.19 14:47:01.709 [37mor.http.w30.python.logger[0m [32m(D)[0m Creating control connection {"wid": 30}
+23.09.19 14:47:01.709 [37mor.http.w30.python.logger[0m [32m(D)[0m Control connection created {"wid": 30}
+23.09.19 14:47:01.709 [37mor.http.w30.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.709 [37mor.http.w30.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.710 [37mor.http.w30.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "30"}
+23.09.19 14:47:01.710 [37mor.http.w30.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 13, "pid": 32}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Creating control connection {"wid": 13}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Control connection created {"wid": 13}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "13"}
+23.09.19 14:47:01.777 [37mor.http.w13.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 11, "pid": 48}
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Creating control connection {"wid": 11}
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Control connection created {"wid": 11}
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "11"}
+23.09.19 14:47:01.870 [37mor.http.w11.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 6, "pid": 39}
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [32m(D)[0m Creating control connection {"wid": 6}
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [32m(D)[0m Control connection created {"wid": 6}
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:01.874 [37msor.http.w6.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "6"}
+23.09.19 14:47:01.875 [37msor.http.w6.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:01.986 [37msor.http.w2.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 2, "pid": 27}
+23.09.19 14:47:01.986 [37msor.http.w2.python.logger[0m [32m(D)[0m Creating control connection {"wid": 2}
+23.09.19 14:47:01.989 [37msor.http.w2.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "2"}
+23.09.19 14:47:02.018 [37msor.http.w2.python.logger[0m [32m(D)[0m Control connection created {"wid": 2}
+23.09.19 14:47:02.018 [37msor.http.w2.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.018 [37msor.http.w2.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.018 [37msor.http.w2.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.122 [37mor.http.w18.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 18, "pid": 42}
+23.09.19 14:47:02.123 [37mor.http.w18.python.logger[0m [32m(D)[0m Creating control connection {"wid": 18}
+23.09.19 14:47:02.123 [37mor.http.w18.python.logger[0m [32m(D)[0m Control connection created {"wid": 18}
+23.09.19 14:47:02.123 [37mor.http.w18.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.124 [37mor.http.w18.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.123 [37mor.http.w18.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "18"}
+23.09.19 14:47:02.123 [37mor.http.w18.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.306 [37msor.http.w7.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 7, "pid": 45}
+23.09.19 14:47:02.306 [37msor.http.w7.python.logger[0m [32m(D)[0m Creating control connection {"wid": 7}
+23.09.19 14:47:02.313 [37msor.http.w7.python.logger[0m [32m(D)[0m Control connection created {"wid": 7}
+23.09.19 14:47:02.313 [37msor.http.w7.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.313 [37msor.http.w7.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.313 [37msor.http.w7.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "7"}
+23.09.19 14:47:02.313 [37msor.http.w7.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.610 [37mor.http.w20.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 20, "pid": 74}
+23.09.19 14:47:02.610 [37mor.http.w20.python.logger[0m [32m(D)[0m Creating control connection {"wid": 20}
+23.09.19 14:47:02.611 [37mor.http.w20.python.logger[0m [32m(D)[0m Control connection created {"wid": 20}
+23.09.19 14:47:02.613 [37mor.http.w20.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.630 [37mor.http.w20.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.631 [37mor.http.w20.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "20"}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 32, "pid": 55}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Creating control connection {"wid": 32}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Control connection created {"wid": 32}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "32"}
+23.09.19 14:47:02.639 [37mor.http.w32.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.639 [37mor.http.w20.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.823 [37mor.http.w24.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 24, "pid": 76}
+23.09.19 14:47:02.824 [37mor.http.w24.python.logger[0m [32m(D)[0m Creating control connection {"wid": 24}
+23.09.19 14:47:02.834 [37mor.http.w24.python.logger[0m [32m(D)[0m Control connection created {"wid": 24}
+23.09.19 14:47:02.834 [37mor.http.w24.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.836 [37mor.http.w24.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.842 [37mor.http.w24.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "24"}
+23.09.19 14:47:02.843 [37mor.http.w24.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:02.933 [37mor.http.w29.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 29, "pid": 91}
+23.09.19 14:47:02.942 [37mor.http.w29.python.logger[0m [32m(D)[0m Creating control connection {"wid": 29}
+23.09.19 14:47:02.958 [37mor.http.w29.python.logger[0m [32m(D)[0m Control connection created {"wid": 29}
+23.09.19 14:47:02.958 [37mor.http.w29.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:02.959 [37mor.http.w29.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:02.959 [37mor.http.w29.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "29"}
+23.09.19 14:47:02.959 [37mor.http.w29.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.020 [37mor.http.w34.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 34, "pid": 68}
+23.09.19 14:47:03.020 [37mor.http.w34.python.logger[0m [32m(D)[0m Creating control connection {"wid": 34}
+23.09.19 14:47:03.021 [37mor.http.w34.python.logger[0m [32m(D)[0m Control connection created {"wid": 34}
+23.09.19 14:47:03.021 [37mor.http.w34.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.021 [37mor.http.w34.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.021 [37mor.http.w34.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "34"}
+23.09.19 14:47:03.021 [37mor.http.w34.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.033 [37mor.http.w33.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 33, "pid": 57}
+23.09.19 14:47:03.034 [37mor.http.w33.python.logger[0m [32m(D)[0m Creating control connection {"wid": 33}
+23.09.19 14:47:03.035 [37mor.http.w33.python.logger[0m [32m(D)[0m Control connection created {"wid": 33}
+23.09.19 14:47:03.036 [37mor.http.w33.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.039 [37mor.http.w33.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.040 [37mor.http.w33.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "33"}
+23.09.19 14:47:03.040 [37mor.http.w33.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.186 [37mor.http.w14.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 14, "pid": 80}
+23.09.19 14:47:03.186 [37mor.http.w14.python.logger[0m [32m(D)[0m Creating control connection {"wid": 14}
+23.09.19 14:47:03.186 [37mor.http.w14.python.logger[0m [32m(D)[0m Control connection created {"wid": 14}
+23.09.19 14:47:03.187 [37mor.http.w14.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "14"}
+23.09.19 14:47:03.186 [37mor.http.w14.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.187 [37mor.http.w14.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.187 [37mor.http.w14.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.206 [37msor.http.w1.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 1, "pid": 46}
+23.09.19 14:47:03.206 [37msor.http.w1.python.logger[0m [32m(D)[0m Creating control connection {"wid": 1}
+23.09.19 14:47:03.206 [37msor.http.w1.python.logger[0m [32m(D)[0m Control connection created {"wid": 1}
+23.09.19 14:47:03.206 [37msor.http.w1.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.222 [37mor.http.w22.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 22, "pid": 82}
+23.09.19 14:47:03.222 [37mor.http.w22.python.logger[0m [32m(D)[0m Creating control connection {"wid": 22}
+23.09.19 14:47:03.222 [37mor.http.w22.python.logger[0m [32m(D)[0m Control connection created {"wid": 22}
+23.09.19 14:47:03.222 [37mor.http.w22.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.223 [37mor.http.w22.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.223 [37mor.http.w22.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "22"}
+23.09.19 14:47:03.223 [37mor.http.w22.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.268 [37msor.http.w1.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 0, "pid": 20}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Creating control connection {"wid": 0}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Control connection created {"wid": 0}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "0"}
+23.09.19 14:47:03.268 [37msor.http.w0.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.268 [37msor.http.w1.python.logger[0m [32m(D)[0m Sending data on control socket {"worker_id": "1", "data_length": 2}
+23.09.19 14:47:03.268 [37msor.http.w1.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.289 [37mor.http.w35.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 35, "pid": 66}
+23.09.19 14:47:03.294 [37mor.http.w35.python.logger[0m [32m(D)[0m Creating control connection {"wid": 35}
+23.09.19 14:47:03.294 [37mor.http.w35.python.logger[0m [32m(D)[0m Control connection created {"wid": 35}
+23.09.19 14:47:03.295 [37mor.http.w35.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.296 [37mor.http.w35.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.296 [37mor.http.w35.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "35"}
+23.09.19 14:47:03.297 [37mor.http.w35.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.307 [37mor.http.w36.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 36, "pid": 59}
+23.09.19 14:47:03.307 [37mor.http.w36.python.logger[0m [32m(D)[0m Creating control connection {"wid": 36}
+23.09.19 14:47:03.307 [37mor.http.w36.python.logger[0m [32m(D)[0m Control connection created {"wid": 36}
+23.09.19 14:47:03.307 [37mor.http.w36.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.308 [37mor.http.w36.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.308 [37msor.http.w8.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 8, "pid": 34}
+23.09.19 14:47:03.309 [37msor.http.w8.python.logger[0m [32m(D)[0m Creating control connection {"wid": 8}
+23.09.19 14:47:03.309 [37msor.http.w8.python.logger[0m [32m(D)[0m Control connection created {"wid": 8}
+23.09.19 14:47:03.309 [37msor.http.w8.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.309 [37mor.http.w36.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "36"}
+23.09.19 14:47:03.309 [37msor.http.w8.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.309 [37mor.http.w36.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.309 [37msor.http.w8.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "8"}
+23.09.19 14:47:03.310 [37msor.http.w8.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 27, "pid": 88}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Creating control connection {"wid": 27}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Control connection created {"wid": 27}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "27"}
+23.09.19 14:47:03.394 [37mor.http.w27.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.474 [37mor.http.w23.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 23, "pid": 87}
+23.09.19 14:47:03.474 [37mor.http.w23.python.logger[0m [32m(D)[0m Creating control connection {"wid": 23}
+23.09.19 14:47:03.474 [37mor.http.w23.python.logger[0m [32m(D)[0m Control connection created {"wid": 23}
+23.09.19 14:47:03.474 [37mor.http.w23.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.474 [37mor.http.w23.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.475 [37mor.http.w23.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "23"}
+23.09.19 14:47:03.475 [37mor.http.w23.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.521 [37mor.http.w21.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 21, "pid": 73}
+23.09.19 14:47:03.521 [37mor.http.w21.python.logger[0m [32m(D)[0m Creating control connection {"wid": 21}
+23.09.19 14:47:03.521 [37mor.http.w21.python.logger[0m [32m(D)[0m Control connection created {"wid": 21}
+23.09.19 14:47:03.521 [37mor.http.w21.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.521 [37mor.http.w21.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.522 [37mor.http.w21.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "21"}
+23.09.19 14:47:03.529 [37mor.http.w21.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:47:03.628 [37mor.http.w25.python.logger[0m [34m(I)[0m Wrapper connected {"wid": 25, "pid": 85}
+23.09.19 14:47:03.628 [37mor.http.w25.python.logger[0m [32m(D)[0m Creating control connection {"wid": 25}
+23.09.19 14:47:03.628 [37mor.http.w25.python.logger[0m [32m(D)[0m Control connection created {"wid": 25}
+23.09.19 14:47:03.628 [37mor.http.w25.python.logger[0m [32m(D)[0m Waiting for start
+23.09.19 14:47:03.629 [37mor.http.w25.python.logger[0m [32m(D)[0m Started
+23.09.19 14:47:03.630 [37m           processor.http[0m [34m(I)[0m Setting default worker availability timeout {"DefaultWorkerAvailabilityTimeoutMilliseconds": 10000}
+23.09.19 14:47:03.630 [37m.webadmin.server.triggers[0m [32m(D)[0m Registered custom route {"routeName": "triggers", "stream": false, "pattern": "/{id}/stats", "method": "GET"}
+23.09.19 14:47:03.630 [37mprocessor.webadmin.server[0m [32m(D)[0m Registered resource {"name": "triggers"}
+23.09.19 14:47:03.630 [37m                processor[0m [33m(W)[0m No metric sinks configured, metrics will not be published
+23.09.19 14:47:03.630 [37m                processor[0m [32m(D)[0m Starting triggers {"triggersError": "json: unsupported value: encountered a cycle via *http.http"}
+23.09.19 14:47:03.641 [37m           processor.http[0m [34m(I)[0m Starting {"listenAddress": ":8080", "readBufferSize": 16384, "maxRequestBodySize": 4194304, "reduceMemoryUsage": false, "cors": null}
+23.09.19 14:47:03.642 [37mprocessor.webadmin.server[0m [34m(I)[0m Listening {"listenAddress": ":8081"}
+23.09.19 14:47:03.642 [37m                processor[0m [32m(D)[0m Processor started
+23.09.19 14:47:03.643 [37mor.http.w25.python.logger[0m [32m(D)[0m Sending data on control socket {"data_length": 2, "worker_id": "25"}
+23.09.19 14:47:03.643 [37mor.http.w25.python.logger[0m [32m(D)[0m Received control message {"messageKind": "wrapperInitialized"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "0"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "0"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "0"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "0"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "0"}
+23.09.19 14:48:13.160 [37msor.http.w0.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "0"}
+23.09.19 14:48:13.161 [37msor.http.w0.python.logger[0m [32m(D)[0m file not in local filesystem, getting from minio {"worker_id": "0"}
+23.09.19 14:48:13.176 [37msor.http.w0.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "0"}
+23.09.19 14:48:13.272 [37msor.http.w1.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "1"}
+23.09.19 14:48:13.272 [37msor.http.w1.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "1"}
+23.09.19 14:48:13.272 [37msor.http.w1.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "1"}
+23.09.19 14:48:13.272 [37msor.http.w1.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "1"}
+23.09.19 14:48:13.272 [37msor.http.w1.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "1"}
+23.09.19 14:48:13.273 [37msor.http.w1.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "1"}
+23.09.19 14:48:13.274 [37msor.http.w1.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "1"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:13.479 [37msor.http.w2.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "2"}
+23.09.19 14:48:13.479 [37msor.http.w2.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "2"}
+23.09.19 14:48:13.485 [37msor.http.w2.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "2"}
+23.09.19 14:48:13.485 [37msor.http.w2.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "2"}
+23.09.19 14:48:13.485 [37msor.http.w2.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "2"}
+23.09.19 14:48:13.485 [37msor.http.w2.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "2"}
+23.09.19 14:48:13.485 [37msor.http.w2.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "2"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "3"}
+23.09.19 14:48:13.594 [37msor.http.w3.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "3"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "4"}
+23.09.19 14:48:13.734 [37msor.http.w4.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "4"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "5"}
+23.09.19 14:48:13.906 [37msor.http.w5.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "5"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "6"}
+23.09.19 14:48:13.983 [37msor.http.w6.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "6"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "7"}
+23.09.19 14:48:14.119 [37msor.http.w7.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "7"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "8"}
+23.09.19 14:48:14.266 [37msor.http.w8.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "8"}
+23.09.19 14:48:14.434 [37msor.http.w9.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "9"}
+23.09.19 14:48:14.434 [37msor.http.w9.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "9"}
+23.09.19 14:48:14.435 [37msor.http.w9.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "9"}
+23.09.19 14:48:14.435 [37msor.http.w9.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "9"}
+23.09.19 14:48:14.435 [37msor.http.w9.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "9"}
+23.09.19 14:48:14.435 [37msor.http.w9.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "9"}
+23.09.19 14:48:14.436 [37msor.http.w9.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "9"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:15.159 [37msor.http.w0.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "0"}
+23.09.19 14:48:15.159 [37msor.http.w0.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "0"}
+23.09.19 14:48:15.160 [37msor.http.w0.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893159.647, "end": 1695134895158.9417, "callid": "7cf30ee47c2c4dfba8b1d1b74b404b12", "request_timestamp": "1695134890990", "request_deadline": "1695135070990", "mode": "bored"}TTSFP {"worker_id": "0"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "10"}
+23.09.19 14:48:15.547 [37mor.http.w10.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "10"}
+23.09.19 14:48:15.646 [37msor.http.w1.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "1"}
+23.09.19 14:48:15.647 [37msor.http.w1.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "1"}
+23.09.19 14:48:15.647 [37msor.http.w1.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893271.8738, "end": 1695134895647.458, "callid": "5c58e5db078a4a18bed7743d48ccc215", "request_timestamp": "1695134890589", "request_deadline": "1695135070589", "mode": "bored"}TTSFP {"worker_id": "1"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:15.888 [37msor.http.w2.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "2"}
+23.09.19 14:48:15.888 [37msor.http.w2.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "2"}
+23.09.19 14:48:15.888 [37msor.http.w2.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893478.839, "end": 1695134895888.6477, "callid": "eb04658296004148acdec8dcba47cd30", "request_timestamp": "1695134890882", "request_deadline": "1695135070882", "mode": "bored"}TTSFP {"worker_id": "2"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "11"}
+23.09.19 14:48:15.994 [37mor.http.w11.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "11"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "12"}
+23.09.19 14:48:16.184 [37mor.http.w12.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "12"}
+23.09.19 14:48:16.335 [37msor.http.w3.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "3"}
+23.09.19 14:48:16.335 [37msor.http.w4.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "4"}
+23.09.19 14:48:16.337 [37msor.http.w4.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "4"}
+23.09.19 14:48:16.339 [37msor.http.w3.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "3"}
+23.09.19 14:48:16.339 [37msor.http.w3.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893590.6638, "end": 1695134896338.6702, "callid": "e801f488ee534627adb2fd245811ee8f", "request_timestamp": "1695134891265", "request_deadline": "1695135071265", "mode": "bored"}TTSFP {"worker_id": "3"}
+23.09.19 14:48:16.346 [37msor.http.w4.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893728.6501, "end": 1695134896345.3706, "callid": "12d176607da2469bb2893ad44aed0481", "request_timestamp": "1695134891083", "request_deadline": "1695135071083", "mode": "bored"}TTSFP {"worker_id": "4"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:16.623 [37mor.http.w13.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "13"}
+23.09.19 14:48:16.623 [37mor.http.w13.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "13"}
+23.09.19 14:48:16.623 [37mor.http.w13.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "13"}
+23.09.19 14:48:16.623 [37mor.http.w13.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "13"}
+23.09.19 14:48:16.624 [37mor.http.w13.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "13"}
+23.09.19 14:48:16.624 [37mor.http.w13.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "13"}
+23.09.19 14:48:16.625 [37mor.http.w13.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "13"}
+23.09.19 14:48:16.648 [37msor.http.w5.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "5"}
+23.09.19 14:48:16.648 [37msor.http.w5.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "5"}
+23.09.19 14:48:16.648 [37msor.http.w5.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893903.3647, "end": 1695134896648.6426, "callid": "a5927e21702648618444303f73f164fb", "request_timestamp": "1695134890687", "request_deadline": "1695135070687", "mode": "bored"}TTSFP {"worker_id": "5"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "14"}
+23.09.19 14:48:16.786 [37mor.http.w14.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "14"}
+23.09.19 14:48:16.789 [37msor.http.w6.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "6"}
+23.09.19 14:48:16.789 [37msor.http.w6.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "6"}
+23.09.19 14:48:16.789 [37msor.http.w6.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134893974.52, "end": 1695134896789.178, "callid": "7792321617e34dc9b27df55472d1c795", "request_timestamp": "1695134891143", "request_deadline": "1695135071143", "mode": "bored"}TTSFP {"worker_id": "6"}
+23.09.19 14:48:16.893 [37msor.http.w7.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "7"}
+23.09.19 14:48:16.894 [37msor.http.w7.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "7"}
+23.09.19 14:48:16.894 [37msor.http.w7.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134894112.1768, "end": 1695134896894.2686, "callid": "d2a8ee979d5448d082845ad33126d598", "request_timestamp": "1695134890816", "request_deadline": "1695135070816", "mode": "bored"}TTSFP {"worker_id": "7"}
+23.09.19 14:48:16.957 [37mor.http.w15.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "15"}
+23.09.19 14:48:16.957 [37mor.http.w15.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "15"}
+23.09.19 14:48:16.957 [37mor.http.w15.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "15"}
+23.09.19 14:48:16.957 [37mor.http.w15.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "15"}
+23.09.19 14:48:16.958 [37mor.http.w15.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "15"}
+23.09.19 14:48:16.958 [37mor.http.w15.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "15"}
+23.09.19 14:48:16.958 [37mor.http.w15.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "15"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:17.108 [37mor.http.w16.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "16"}
+23.09.19 14:48:17.108 [37mor.http.w16.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "16"}
+23.09.19 14:48:17.110 [37mor.http.w16.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "16"}
+23.09.19 14:48:17.110 [37mor.http.w16.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "16"}
+23.09.19 14:48:17.110 [37mor.http.w16.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "16"}
+23.09.19 14:48:17.110 [37mor.http.w16.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "16"}
+23.09.19 14:48:17.110 [37mor.http.w16.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "16"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:17.326 [37mor.http.w17.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "17"}
+23.09.19 14:48:17.327 [37mor.http.w17.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "17"}
+23.09.19 14:48:17.327 [37mor.http.w17.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "17"}
+23.09.19 14:48:17.327 [37mor.http.w17.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "17"}
+23.09.19 14:48:17.328 [37mor.http.w17.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "17"}
+23.09.19 14:48:17.328 [37mor.http.w17.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "17"}
+23.09.19 14:48:17.329 [37mor.http.w17.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "17"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:17.487 [37msor.http.w8.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "8"}
+23.09.19 14:48:17.487 [37msor.http.w8.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "8"}
+23.09.19 14:48:17.487 [37msor.http.w8.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134894264.267, "end": 1695134897487.4436, "callid": "b55b9819ed8140e8811b04d350edd0f2", "request_timestamp": "1695134890521", "request_deadline": "1695135070521", "mode": "bored"}TTSFP {"worker_id": "8"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:17.626 [37msor.http.w9.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "9"}
+23.09.19 14:48:17.627 [37msor.http.w9.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "9"}
+23.09.19 14:48:17.627 [37msor.http.w9.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134894434.1318, "end": 1695134897627.0894, "callid": "9b5649559084476699bdcd86f40fc308", "request_timestamp": "1695134891373", "request_deadline": "1695135071373", "mode": "bored"}TTSFP {"worker_id": "9"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "18"}
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "18"}
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "18"}
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "18"}
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "18"}
+23.09.19 14:48:17.737 [37mor.http.w18.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "18"}
+23.09.19 14:48:17.738 [37mor.http.w18.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "18"}
+23.09.19 14:48:17.898 [37mor.http.w19.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "19"}
+23.09.19 14:48:17.899 [37mor.http.w19.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "19"}
+23.09.19 14:48:17.899 [37mor.http.w19.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "19"}
+23.09.19 14:48:17.900 [37mor.http.w19.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "19"}
+23.09.19 14:48:17.900 [37mor.http.w19.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "19"}
+23.09.19 14:48:17.900 [37mor.http.w19.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "19"}
+23.09.19 14:48:17.906 [37mor.http.w19.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "19"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:18.697 [37mor.http.w10.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "10"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:18.703 [37mor.http.w10.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "10"}
+23.09.19 14:48:18.703 [37mor.http.w10.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134895541.455, "end": 1695134898703.2446, "callid": "aa409699c02a48d19c03b7163a3e3479", "request_timestamp": "1695134891567", "request_deadline": "1695135071567", "mode": "bored"}TTSFP {"worker_id": "10"}
+23.09.19 14:48:18.795 [37mor.http.w12.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "12"}
+23.09.19 14:48:18.795 [37mor.http.w12.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "12"}
+23.09.19 14:48:18.795 [37mor.http.w12.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134896182.0393, "end": 1695134898795.2405, "callid": "ab3241a8ef484446a00077c7e7d62ef1", "request_timestamp": "1695134891739", "request_deadline": "1695135071739", "mode": "bored"}TTSFP {"worker_id": "12"}
+23.09.19 14:48:18.909 [37mor.http.w11.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "11"}
+23.09.19 14:48:18.909 [37mor.http.w11.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "11"}
+23.09.19 14:48:18.910 [37mor.http.w11.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134895987.846, "end": 1695134898909.9453, "callid": "34a26befe2d9445b90cf710406358fed", "request_timestamp": "1695134891637", "request_deadline": "1695135071637", "mode": "bored"}TTSFP {"worker_id": "11"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "20"}
+23.09.19 14:48:19.051 [37mor.http.w20.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "20"}
+23.09.19 14:48:19.188 [37mor.http.w21.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "21"}
+23.09.19 14:48:19.189 [37mor.http.w21.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "21"}
+23.09.19 14:48:19.429 [37mor.http.w22.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "22"}
+23.09.19 14:48:19.429 [37mor.http.w22.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "22"}
+23.09.19 14:48:19.429 [37mor.http.w22.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "22"}
+23.09.19 14:48:19.429 [37mor.http.w22.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "22"}
+23.09.19 14:48:19.429 [37mor.http.w22.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "22"}
+23.09.19 14:48:19.434 [37mor.http.w22.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "22"}
+23.09.19 14:48:19.435 [37mor.http.w22.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "22"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:19.846 [37mor.http.w13.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "13"}
+23.09.19 14:48:19.846 [37mor.http.w13.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "13"}
+23.09.19 14:48:19.855 [37mor.http.w13.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134896622.1785, "end": 1695134899843.458, "callid": "7a2adc87bb724d28b124943b2e98da99", "request_timestamp": "1695134891954", "request_deadline": "1695135071954", "mode": "bored"}TTSFP {"worker_id": "13"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:19.948 [37mor.http.w14.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "14"}
+23.09.19 14:48:19.949 [37mor.http.w14.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "14"}
+23.09.19 14:48:19.949 [37mor.http.w14.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134896779.2935, "end": 1695134899949.4539, "callid": "5e5788ea3a19438ebbd8fa1eecefee15", "request_timestamp": "1695134891859", "request_deadline": "1695135071859", "mode": "bored"}TTSFP {"worker_id": "14"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:20.114 [37mor.http.w23.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "23"}
+23.09.19 14:48:20.115 [37mor.http.w23.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "23"}
+23.09.19 14:48:20.115 [37mor.http.w23.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "23"}
+23.09.19 14:48:20.115 [37mor.http.w23.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "23"}
+23.09.19 14:48:20.115 [37mor.http.w23.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "23"}
+23.09.19 14:48:20.115 [37mor.http.w23.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "23"}
+23.09.19 14:48:20.117 [37mor.http.w23.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "23"}
+23.09.19 14:48:20.312 [37mor.http.w24.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "24"}
+23.09.19 14:48:20.312 [37mor.http.w24.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "24"}
+23.09.19 14:48:20.312 [37mor.http.w24.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "24"}
+23.09.19 14:48:20.313 [37mor.http.w24.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "24"}
+23.09.19 14:48:20.313 [37mor.http.w24.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "24"}
+23.09.19 14:48:20.313 [37mor.http.w24.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "24"}
+23.09.19 14:48:20.314 [37mor.http.w24.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "24"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:20.546 [37mor.http.w17.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "17"}
+23.09.19 14:48:20.546 [37mor.http.w17.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "17"}
+23.09.19 14:48:20.546 [37mor.http.w17.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134897326.0747, "end": 1695134900546.4253, "callid": "bc546f34f3894678a29f575460087a03", "request_timestamp": "1695134892190", "request_deadline": "1695135072190", "mode": "bored"}TTSFP {"worker_id": "17"}
+23.09.19 14:48:20.581 [37mor.http.w16.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "16"}
+23.09.19 14:48:20.581 [37mor.http.w16.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "16"}
+23.09.19 14:48:20.582 [37mor.http.w16.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134897107.971, "end": 1695134900581.456, "callid": "e8acf93f295841f4b6224664d4bfc167", "request_timestamp": "1695134892094", "request_deadline": "1695135072094", "mode": "bored"}TTSFP {"worker_id": "16"}
+23.09.19 14:48:20.584 [37mor.http.w15.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "15"}
+23.09.19 14:48:20.584 [37mor.http.w15.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "15"}
+23.09.19 14:48:20.585 [37mor.http.w15.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134896957.1084, "end": 1695134900584.8933, "callid": "fb12ad8a82dc42e494e7951c3ab98c70", "request_timestamp": "1695134892000", "request_deadline": "1695135072000", "mode": "bored"}TTSFP {"worker_id": "15"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:20.805 [37mor.http.w25.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "25"}
+23.09.19 14:48:20.805 [37mor.http.w25.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "25"}
+23.09.19 14:48:20.808 [37mor.http.w25.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "25"}
+23.09.19 14:48:20.808 [37mor.http.w25.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "25"}
+23.09.19 14:48:20.808 [37mor.http.w25.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "25"}
+23.09.19 14:48:20.808 [37mor.http.w25.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "25"}
+23.09.19 14:48:20.809 [37mor.http.w25.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "25"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:21.018 [37mor.http.w26.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "26"}
+23.09.19 14:48:21.019 [37mor.http.w26.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "26"}
+23.09.19 14:48:21.071 [37mor.http.w18.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "18"}
+23.09.19 14:48:21.071 [37mor.http.w18.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "18"}
+23.09.19 14:48:21.071 [37mor.http.w18.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134897736.6162, "end": 1695134901071.4194, "callid": "22dc4a7bc8ae4aeebce32471d445af7c", "request_timestamp": "1695134892296", "request_deadline": "1695135072296", "mode": "bored"}TTSFP {"worker_id": "18"}
+23.09.19 14:48:21.085 [37mor.http.w19.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "19"}
+23.09.19 14:48:21.086 [37mor.http.w19.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "19"}
+23.09.19 14:48:21.086 [37mor.http.w19.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134897897.7178, "end": 1695134901086.3691, "callid": "5cf4f82c3c9d4ed792cbff1324f40792", "request_timestamp": "1695134892402", "request_deadline": "1695135072402", "mode": "bored"}TTSFP {"worker_id": "19"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "27"}
+23.09.19 14:48:21.232 [37mor.http.w27.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "27"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m ocr function start {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m set missing header X-Check-Filename to fusionize.pdf {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m set missing header X-Virus-Filename to fusionize.pdf {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m set missing header X-Email-Filename to fusionizeOCR.pdf {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m set missing header Forceocr to True {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m filename=fusionize.pdf {"worker_id": "28"}
+23.09.19 14:48:21.638 [37mor.http.w28.python.logger[0m [32m(D)[0m stored PDF from minio locally {"worker_id": "28"}
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+Scanning contents     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:22.534 [37mor.http.w21.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "21"}
+23.09.19 14:48:22.539 [37mor.http.w21.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "21"}
+23.09.19 14:48:22.539 [37mor.http.w21.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134899179.1536, "end": 1695134902539.1892, "callid": "f9b4bf792f7b4bb382859daa6ad16ddd", "request_timestamp": "1695134892581", "request_deadline": "1695135072581", "mode": "bored"}TTSFP {"worker_id": "21"}
+23.09.19 14:48:22.643 [37mor.http.w20.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "20"}
+23.09.19 14:48:22.643 [37mor.http.w20.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "20"}
+23.09.19 14:48:22.644 [37mor.http.w20.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134899046.2207, "end": 1695134902643.854, "callid": "120003923add46e7bbf5a000d02ea639", "request_timestamp": "1695134892454", "request_deadline": "1695135072454", "mode": "bored"}TTSFP {"worker_id": "20"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:23.044 [37mor.http.w22.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "22"}
+23.09.19 14:48:23.044 [37mor.http.w22.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "22"}
+23.09.19 14:48:23.045 [37mor.http.w22.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134899424.1748, "end": 1695134903044.761, "callid": "34718acdf3274090bb1058237eaf733f", "request_timestamp": "1695134892641", "request_deadline": "1695135072641", "mode": "bored"}TTSFP {"worker_id": "22"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:23.714 [37mor.http.w24.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "24"}
+23.09.19 14:48:23.714 [37mor.http.w24.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "24"}
+23.09.19 14:48:23.715 [37mor.http.w24.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134900312.0068, "end": 1695134903714.8313, "callid": "08ece4c0cccb4becb045bc9bca91c078", "request_timestamp": "1695134892849", "request_deadline": "1695135072849", "mode": "bored"}TTSFP {"worker_id": "24"}
+23.09.19 14:48:23.736 [37mor.http.w23.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "23"}
+23.09.19 14:48:23.737 [37mor.http.w23.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "23"}
+23.09.19 14:48:23.738 [37mor.http.w23.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134900112.9907, "end": 1695134903737.96, "callid": "6b7e9c68fc8749be81df234f00ae3652", "request_timestamp": "1695134892751", "request_deadline": "1695135072751", "mode": "bored"}TTSFP {"worker_id": "23"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:24.183 [37mor.http.w25.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "25"}
+23.09.19 14:48:24.183 [37mor.http.w25.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "25"}
+23.09.19 14:48:24.184 [37mor.http.w25.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134900803.4119, "end": 1695134904183.8608, "callid": "89c4b2f3401740afb219a9bb29706a60", "request_timestamp": "1695134892947", "request_deadline": "1695135072947", "mode": "bored"}TTSFP {"worker_id": "25"}
+23.09.19 14:48:24.270 [37mor.http.w26.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "26"}
+23.09.19 14:48:24.271 [37mor.http.w26.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "26"}
+23.09.19 14:48:24.271 [37mor.http.w26.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134901017.4983, "end": 1695134904271.3618, "callid": "7116f26ab32b44d6aa14264abb1647ff", "request_timestamp": "1695134893040", "request_deadline": "1695135073040", "mode": "bored"}TTSFP {"worker_id": "26"}
+23.09.19 14:48:24.306 [37mor.http.w27.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "27"}
+23.09.19 14:48:24.307 [37mor.http.w27.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "27"}
+23.09.19 14:48:24.307 [37mor.http.w27.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134901227.0457, "end": 1695134904307.3489, "callid": "9acc8533fc4044a68329b7942c055a2f", "request_timestamp": "1695134893101", "request_deadline": "1695135073101", "mode": "bored"}TTSFP {"worker_id": "27"}
+OCR                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00
+23.09.19 14:48:24.539 [37mor.http.w28.python.logger[0m [32m(D)[0m <Response [204]> {"worker_id": "28"}
+23.09.19 14:48:24.539 [37mor.http.w28.python.logger[0m [32m(D)[0m ocr function end {"worker_id": "28"}
+23.09.19 14:48:24.540 [37mor.http.w28.python.logger[0m [33m(W)[0m PFSTT{"function": "ocr", "start": 1695134901631.3208, "end": 1695134904539.7817, "callid": "4f86a1375b4b44f181bae57c8e66692d", "request_timestamp": "1695134893418", "request_deadline": "1695135073418", "mode": "bored"}TTSFP {"worker_id": "28"}
