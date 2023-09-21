@@ -57,13 +57,13 @@ def email(context, event):
     print(pdfContent)
 
     context.logger.debug("email function end")
-
+    callid = event.headers["Callid"]
     end_ts = time.time() * 1000
     eval_info = {
         "function": "urgentemail",
         "start": start_ts,
         "end": end_ts,
-        "callid": event.headers["Callid"]
+        "callid": callid,
     }
     if event.headers.get("Profaastinate-Request-Timestamp"):
         eval_info["request_timestamp"] = event.headers["Profaastinate-Request-Timestamp"]
@@ -77,7 +77,7 @@ def email(context, event):
 
     # answer http request
     return context.Response(
-        body=pdfContent,
+        body=str(callid),
         status_code=200,
         content_type='text/plain'
     )

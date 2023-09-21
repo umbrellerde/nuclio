@@ -81,7 +81,7 @@ def virus(context, event):
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
             "x-ocr-filename": filename,
-            "callid": event.headers["Callid"]
+            "callid": callid,
         }
     )
     context.logger.debug(response)
@@ -107,5 +107,5 @@ def virus(context, event):
 
     return context.Response(
         status_code=200,
-        body="no virus found"
+        body=str(callid),
     )
