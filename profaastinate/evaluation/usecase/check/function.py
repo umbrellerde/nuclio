@@ -36,7 +36,7 @@ def check(context, event):
 
     # get filename to read from request header
     filename = "test.pdf" if event.headers.get("X-Check-Filename") is None else event.headers["X-Check-Filename"]
-    deadline = "360000"
+    deadline = "420000"
     context.logger.debug(f"filename={filename}")
 
     # get file

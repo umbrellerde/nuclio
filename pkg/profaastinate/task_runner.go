@@ -111,7 +111,7 @@ func (h *Hustler) Start() {
 	// begin by starting swamped supervisor
 	stopSwamped, stopBored := false, true
 	supervisorDone := make(chan bool)
-	go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, 0, &supervisorDone)
+	go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
 
 	h.Logger.Debug("Hustler started first swamped supervisor")
 
@@ -132,7 +132,7 @@ func (h *Hustler) Start() {
 			<-supervisorDone
 			h.Logger.Debug("Hustler thinks the swamped supervisor is done")
 			// start bored supervisor
-			go h.swampedSupervisor(&stopBored, nWorkers, urgencyMs, frequencyMs, 48, &supervisorDone)
+			go h.swampedButActuallyBoredSupervisor(&stopBored, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
 			// This is old and does not reaaally work unfortunately
 			//go h.slightlyLessBoredSupervisor(batchSize, workersForFunctions, &stopBored, &supervisorDone)
 			h.Logger.Debug("Hustler started the bored supervisor")
@@ -144,7 +144,7 @@ func (h *Hustler) Start() {
 			<-supervisorDone
 			h.Logger.Debug("Hustler thinks the bored supervisor is done")
 			// start swamped supervisor
-			go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, 0, &supervisorDone)
+			go h.swampedSupervisor(&stopSwamped, nWorkers, urgencyMs, frequencyMs, &supervisorDone)
 			h.Logger.Debug("Hustler started the swamped supervisor")
 		}
 	}
@@ -153,7 +153,7 @@ func (h *Hustler) Start() {
 // A swampedSupervisor performs urgent calls for _all_ functions
 // urgencyMs determines how close a call's deadline has to be to make it urgent (e.g. 10_000ms)
 // frequencyMs
-func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs, minResults int, supervisorDone *chan bool) {
+func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int, supervisorDone *chan bool) {
 
 	h.Logger.Debug("swampedSupervisor started")
 
@@ -182,7 +182,7 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 		}
 
 		// get the calls from the database
-		calls := h.getUrgentCalls(urgencyMs, minResults)
+		calls := h.getUrgentCalls(urgencyMs, 0)
 		nCalls := 0
 		for _, f := range calls {
 			for range f {
@@ -200,6 +200,66 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 			for _, call := range callsForName {
 				tasks <- call
 				h.Logger.Debug("Sent call %s to workers", call.String())
+			}
+		}
+	}
+
+	h.Logger.Debug("SwampedSupervisor is finished")
+	*supervisorDone <- true
+}
+
+// A swampedSupervisor performs urgent calls for _all_ functions
+// urgencyMs determines how close a call's deadline has to be to make it urgent (e.g. 10_000ms)
+// frequencyMs
+func (h *Hustler) swampedButActuallyBoredSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int, supervisorDone *chan bool) {
+
+	h.Logger.Debug("swampedSupervisor started")
+
+	// create and start the workers
+	tasks := make(chan FunctionCall)
+	defer close(tasks)
+	h.Logger.Debug("starting workers")
+	for i := 0; i < nWorkers; i++ {
+		workerId := "swampedWorker" + strconv.Itoa(i)
+		h.Logger.Debug("starting worker %s", workerId)
+		go h.worker(tasks, workerId, "swamped")
+	}
+
+	// every 'freqencyMs' seconds, look for new urgent calls and send them to the workers
+	ticker := time.NewTicker(time.Duration(frequencyMs) * time.Millisecond)
+	defer ticker.Stop()
+	i := -1
+	for range ticker.C {
+
+		i++
+		h.Logger.Debug("iteration %d", i)
+
+		// if the hustler tells the swampedSupervisor to stop, end the function
+		if *stopIt {
+			break // This is _very_ clean code, @google -- I'll be hearing from you
+		}
+
+		// get the calls from the database
+		calls := h.getUrgentCalls(urgencyMs, 35)
+		nCalls := 0
+		for _, f := range calls {
+			for range f {
+				nCalls++
+			}
+		}
+		h.Logger.Debug("found %d calls", nCalls)
+		if len(calls) == 0 {
+			h.Logger.Error("no calls for swampedSupervisor")
+			continue
+		}
+
+		// send calls to workers
+		for _, callsForName := range calls {
+			for _, call := range callsForName {
+				go func() {
+					tasks <- call
+					h.Logger.Debug("Sent call %s to workers", call.String())
+				}()
 			}
 		}
 	}

@@ -43,7 +43,7 @@ def virus(context, event):
 
     # get filename to read from request header
     filename = "test.pdf" if event.headers.get("X-Virus-Filename") is None else event.headers["X-Virus-Filename"]
-    deadline = "180000"
+    deadline = "420000"
     context.logger.debug(f"filename={filename}")
 
     # download the file "file.pdf" from minio using default credentials
@@ -81,7 +81,7 @@ def virus(context, event):
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
             "x-ocr-filename": filename,
-            "callid": event.headers["Callid"]
+            "callid": callid
         }
     )
     context.logger.debug(response)
@@ -106,6 +106,7 @@ def virus(context, event):
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     return context.Response(
+        body=str(callid),
         status_code=200,
         body="no virus found"
     )

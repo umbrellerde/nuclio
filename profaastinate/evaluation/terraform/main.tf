@@ -41,7 +41,7 @@ resource "google_compute_instance" "default" {
     }
   }
 
-  // metadata_startup_script = "sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y sysstat htop git ca-certificates curl gnupg make golang-go && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker $USER && sudo gpg -k && sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69 && echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list && sudo apt-get update && sudo apt-get install k6 && git clone https://github.com/umbrellerde/nuclio && cd nuclio && git switch 1.11.x && cd .. && touch done.txt"
+  metadata_startup_script = "sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y sysstat htop git ca-certificates curl gnupg make golang-go && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker $USER && sudo gpg -k && sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69 && echo 'deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main' | sudo tee /etc/apt/sources.list.d/k6.list && sudo apt-get update && sudo apt-get install k6 && git clone https://github.com/umbrellerde/nuclio && cd nuclio && git switch 1.11.x && cd .. && touch done.txt"
 
   //metadata_startup_script = file("../deployment_scripts/installDeps.sh")
 

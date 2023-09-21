@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-functions=( check virus ocr email urgentcheck urgentvirus urgentocr urgentemail)
+functions=( check virus ocr email urgentcheck urgentvirus urgentocr urgentemail )
 
 mkdir -p "logs"
 

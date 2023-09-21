@@ -80,7 +80,7 @@ def email(context, event):
 
     # answer http request
     return context.Response(
-        body=pdfContent,
+        body=str(callid),
         status_code=200,
         content_type='text/plain'
     )

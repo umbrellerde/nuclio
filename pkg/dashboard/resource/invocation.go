@@ -218,7 +218,7 @@ func (tr *invocationResource) resolveInvokeTimeout(invokeTimeout string) (time.D
 var invocationResourceInstance = &invocationResource{
 	resource:      newResource("api/function_invocations", []restful.ResourceMethod{}),
 	procastinator: profaastinate.NewProcrastinator(),
-	megavisor:     profaastinate.NewMegavisor(15, 1_000, 10_000, 80, 90, nil),
+	megavisor:     profaastinate.NewMegavisor(30, 1_000, 10_000, 60, 90, nil),
 	hustler:       profaastinate.NewHustler(nil),
 }
 

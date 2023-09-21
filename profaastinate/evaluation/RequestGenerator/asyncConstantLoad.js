@@ -22,6 +22,6 @@ export default function () {
       const startTime = Date.now();
       // Send a GET request
       let res = http.get('http://localhost:8070/api/function_invocations', { headers: headers });
-      console.log("K6MAGICSTRING" + startTime + ", " + res.body + ", " + res.timings.duration + "K7MAGICSTRING")
+      console.log("K6MAGICSTRING" + startTime + "," + res.body + "," + res.timings.duration + "K7MAGICSTRING")
       check(res, {"Response Status is 204": (r) => r.status == 200})
 }

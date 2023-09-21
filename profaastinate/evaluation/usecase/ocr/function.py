@@ -83,7 +83,7 @@ def ocr(context, event):
             "x-nuclio-async": "true",
             "x-nuclio-async-deadline": deadline,
             "x-email-filename": "fusionizeOCR.pdf",
-            "callid": event.headers["Callid"]
+            "callid": callid
         }
     )
     context.logger.debug(response)
@@ -107,7 +107,7 @@ def ocr(context, event):
     context.logger.warn(f"PFSTT{json.dumps(eval_info)}TTSFP")
 
     # return the encrypted body, and some hard-coded header
-    return context.Response(body=responseMsg,
+    return context.Response(body=str(callid),
                             headers={'x-encrypt-algo': 'aes256'},
                             content_type='text/plain',
                             status_code=200)
