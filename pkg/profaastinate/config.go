@@ -28,7 +28,7 @@ func UrgentCallsQuery(ms, minResults int) string {
 SELECT *
 FROM delayed_calls
 WHERE deadline <= now() + interval '%s milliseconds'
-UNION ALL
+UNION
 (SELECT *
 FROM delayed_calls
 ORDER BY deadline ASC
