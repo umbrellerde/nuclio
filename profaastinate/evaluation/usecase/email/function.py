@@ -61,12 +61,13 @@ def email(context, event):
 
     context.logger.debug("email function end")
 
+    callid = event.headers["Callid"]
     end_ts = time.time() * 1000
     eval_info = {
         "function": "email",
         "start": start_ts,
         "end": end_ts,
-        "callid": event.headers["Callid"]
+        "callid": callid
     }
     if event.headers.get("Profaastinate-Request-Timestamp"):
         eval_info["request_timestamp"] = event.headers["Profaastinate-Request-Timestamp"]
