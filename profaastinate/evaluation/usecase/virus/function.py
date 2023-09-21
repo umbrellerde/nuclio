@@ -108,5 +108,4 @@ def virus(context, event):
     return context.Response(
         body=str(callid),
         status_code=200,
-        body="no virus found"
     )

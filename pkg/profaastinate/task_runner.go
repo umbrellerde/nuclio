@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -213,17 +214,19 @@ func (h *Hustler) swampedSupervisor(stopIt *bool, nWorkers, urgencyMs, frequency
 // frequencyMs
 func (h *Hustler) swampedButActuallyBoredSupervisor(stopIt *bool, nWorkers, urgencyMs, frequencyMs int, supervisorDone *chan bool) {
 
-	h.Logger.Debug("swampedSupervisor started")
+	h.Logger.Debug("bored started")
 
 	// create and start the workers
 	tasks := make(chan FunctionCall)
 	defer close(tasks)
 	h.Logger.Debug("starting workers")
 	for i := 0; i < nWorkers; i++ {
-		workerId := "swampedWorker" + strconv.Itoa(i)
+		workerId := "boredWorker" + strconv.Itoa(i)
 		h.Logger.Debug("starting worker %s", workerId)
-		go h.worker(tasks, workerId, "swamped")
+		go h.worker(tasks, workerId, "bored")
 	}
+
+	var wg sync.WaitGroup
 
 	// every 'freqencyMs' seconds, look for new urgent calls and send them to the workers
 	ticker := time.NewTicker(time.Duration(frequencyMs) * time.Millisecond)
@@ -256,15 +259,17 @@ func (h *Hustler) swampedButActuallyBoredSupervisor(stopIt *bool, nWorkers, urge
 		// send calls to workers
 		for _, callsForName := range calls {
 			for _, call := range callsForName {
+				wg.Add(1)
 				go func() {
+					defer wg.Done()
 					tasks <- call
 					h.Logger.Debug("Sent call %s to workers", call.String())
 				}()
 			}
 		}
 	}
-
-	h.Logger.Debug("SwampedSupervisor is finished")
+	wg.Wait()
+	h.Logger.Debug("BoredSupervisor is finished")
 	*supervisorDone <- true
 }
 
