@@ -260,11 +260,11 @@ func (h *Hustler) swampedButActuallyBoredSupervisor(stopIt *bool, nWorkers, urge
 		for _, callsForName := range calls {
 			for _, call := range callsForName {
 				wg.Add(1)
-				go func() {
+				go func(call FunctionCall) {
 					defer wg.Done()
 					tasks <- call
 					h.Logger.Debug("Sent call %s to workers", call.String())
-				}()
+				}(call)
 			}
 		}
 	}
