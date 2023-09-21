@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/nuclio/errors"
-	"github.com/nuclio/logger"
-	headers2 "github.com/nuclio/nuclio/pkg/common/headers"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/nuclio/errors"
+	"github.com/nuclio/logger"
+	"github.com/nuclio/nuclio/pkg/common/headers"
 )
 
 type Procrastinator struct {
@@ -31,6 +32,7 @@ func ensureTablesExist(conn *pgxpool.Pool) error {
 				headers TEXT NOT NULL,
 				body TEXT NOT NULL
 			);
+			ALTER DATABASE postgres SET DEFAULT_TRANSACTION_ISOLATION TO 'serializable';
 		`)
 	return err
 }
@@ -50,7 +52,7 @@ func NewProcrastinator() *Procrastinator {
 
 func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 
-	pro.Logger.Debug("Procrastinating request for function %s\n", request.Header.Get("x-nuclio-function-name"))
+	pro.Logger.Debug("Procrastinating request for function %s with callId header %s\n", request.Header.Get("x-nuclio-function-name"), request.Header.Get("callid"))
 
 	// read request data
 	name := request.Header.Get("x-nuclio-function-name") // TODO does Nuclio already check if the header exists?
@@ -67,7 +69,7 @@ func (pro *Procrastinator) Procrastinate(request *http.Request) error {
 	}
 
 	// set function deadline
-	deadlineStr := request.Header.Get(headers2.AsyncCallDeadline)
+	deadlineStr := request.Header.Get(headers.AsyncCallDeadline)
 	deadlineInt, deadlineErr := strconv.Atoi(deadlineStr)
 	pro.Logger.Info("Function has deadline of %d ms", deadlineInt)
 	if deadlineErr != nil {
