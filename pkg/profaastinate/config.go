@@ -25,14 +25,16 @@ func UrgentCallsQuery(ms, minResults int) string {
 		panic("So nich!")
 	}
 	sql := `
-SELECT *
-FROM delayed_calls
-WHERE deadline <= now() + interval '%s milliseconds'
-UNION
-(SELECT *
-FROM delayed_calls
-ORDER BY deadline ASC
-LIMIT %d);
+DELETE FROM delayed_calls WHERE id IN (
+	SELECT id FROM delayed_calls
+	WHERE deadline <= now() + interval '%s milliseconds'
+	UNION
+	(SELECT id
+	FROM delayed_calls
+	ORDER BY deadline ASC
+	LIMIT %d)
+)
+RETURNING *;
 `
 	sql = fmt.Sprintf(sql, strconv.Itoa(ms), minResults)
 	return sql

@@ -307,10 +307,10 @@ func (h *Hustler) getUrgentCalls(urgencyMs, minResults int) map[string][]Functio
 	}
 
 	// delete calls from DB
-	_, err = tx.Exec(context.Background(), `DELETE FROM delayed_calls WHERE id = any($1)`, getIds(calls))
-	if err != nil {
-		h.Logger.Warn("Error while trying to delete urgent calls from DB")
-	}
+	// _, err = tx.Exec(context.Background(), `DELETE FROM delayed_calls WHERE id = any($1)`, getIds(calls))
+	// if err != nil {
+	// 	h.Logger.Warn("Error while trying to delete urgent calls from DB")
+	// }
 
 	// log all urgent ids for debugging
 	h.Logger.Debug("Ids of urgent function calls: ")
