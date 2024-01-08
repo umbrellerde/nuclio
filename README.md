@@ -16,6 +16,29 @@ Translations:
 
 - [简体中文](./README_zh.md)
 
+# Research
+
+If you use this software in a publication, please cite it as:
+## Text
+Trever Schirmer, Valentin Carl, Tobias Pfandzelter, and David Bermbach. ProFaaStinate: Delaying Serverless Function Calls to Optimize Platform Performance. In Proceedings of the 9th International Workshop on Serverless Computing, WoSC ’23, New York, NY, USA, December 2023. ACM.
+## BibTeX
+```
+@inproceedings{schirmer_2023_ProFaaStinate,
+    author = "Schirmer, Trever and Carl, Valentin and Pfandzelter, Tobias and Bermbach, David",
+    title = "ProFaaStinate: Delaying Serverless Function Calls to Optimize Platform Performance",
+    booktitle = "Proceedings of the 9th International Workshop on Serverless Computing",
+    month = dec,
+    year = 2023,
+    publisher = "ACM",
+    address = "New York, NY, USA",
+    series = "WoSC '23",
+    location = "Bologna, Italy",
+    numpages = "6",
+    url = "https://doi.org/10.1145/3631295.3631393",
+    doi = "10.1145/3631295.3631393",
+}
+```
+
 #### In this document
 
 - [Overview](#overview)
